@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<script>
+    const cookieSession = require('cookie-session');
+    const bcrypt = require('bcrypt');
+    const dbConnection = require('./views/database');
+    const session = require('express-session')
+</script>
+
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" type="text/css" href="/stylesheets/style.css" />
+
+    <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style type="text/css">
+        input[type='radio'] {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 1px solid darkgray;
+            border-radius: 50%;
+            outline: none;
+            box-shadow: 0 0 5px 0px gray inset;
+        }
+        
+        input[type='radio']:hover {
+            box-shadow: 0 0 5px 0px orange inset;
+        }
+        
+        input[type='radio']:before {
+            content: '';
+            display: block;
+            width: 60%;
+            height: 60%;
+            margin: 20% auto;
+            border-radius: 50%;
+        }
+        
+        input[type='radio']:checked:before {
+            background: red;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="logo-details">
+            <i class='bx bxl-c-plus-plus icon'></i>
+            <a class="logo_name" href="/Dashboard">Activity</a>
+            <i class='bx bx-menu' id="btn"></i>
+
+        </div>
+        <li>
+            <a href="/Dashboard">
+                <i class='bx bx-heart'></i>
+                <span class="links_name">ย้อนกลับ</span>
+            </a>
+            <span class="tooltip">ย้อนกลับ</span>
+        </li>
+        <ul class="nav-list">
+
+
+        </ul>
+    </div>
+    <section class="home-section" style="padding-left:20px;padding-right: 20px;">
+        <div class="text">ประเมินความพึงพอใจต่อการเข้าร่วมกิจกรรม </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                    กิจกรรม :
+                    <%=activityName%>
+                        <br>
+                </div>
+                
+                <div class="col-md-9"> <br />
+                    <form id="formqsys" name="formqsys" method="post" action="/saveassessment/<%=activityName%>/<%=studentID%>">
+                        <table width="70%" border="1" align="center" cellpadding="0" cellspacing="0" class="table table-bordered table-hover">
+                            <tr>
+                                <td width="75%" rowspan="2" align="center">
+                                    <br>
+                                    <strong>หัวข้อการประเมิน</strong>
+                                </td>
+                                <td colspan="5" align="center"><strong>ระดับความพึงพอใจ</strong></td>
+                            </tr>
+                            <tr>
+                                <td width="5%" align="center"><strong>5</strong></td>
+                                <td width="5%" align="center"><strong>4</strong></td>
+                                <td width="5%" align="center"><strong>3</strong></td>
+                                <td width="5%" align="center"><strong>2</strong></td>
+                                <td width="5%" align="center"><strong>1</strong></td>
+                            </tr>
+                            <tr>
+                                <td height="30">&nbsp; 1.กิจกรรมในครั้งนี้มีประโยชรน์ต่อท่าน</td>
+                                <%for (let i = 5; i >= 1; i--){%>
+                                    <%if(data['Q1']==i){%>
+                                        <td height="30" align="center"><input type="radio" name="es_id1" value="<%=i%>" checked disabled /></td>
+                                        <%}else{%>
+                                            <td height="30" align="center"><input type="radio" name="es_id1" value="<%=i%>" disabled /></td>
+                                            <%}%>
+
+                                                <%}%>
+                            </tr>
+                            <tr>
+                                <td height="30">&nbsp; 2.การกิจกรรมจัดในเวลาที่เหมาะสม</td>
+                                <%for (let i = 5; i >= 1; i--){%>
+                                    <%if(data['Q2']==i){%>
+                                        <td height="30" align="center"><input type="radio" name="es_id2" value="<%=i%>" checked disabled /></td>
+                                        <%}else{%>
+                                            <td height="30" align="center"><input type="radio" name="es_id2" value="<%=i%>" disabled /></td>
+                                            <%}%>
+
+                                                <%}%>
+                            </tr>
+                            <tr>
+                                <td height="30">&nbsp; 3.กิจกรรมจัดในสถานที่เหมาะสม</td>
+                                <%for (let i = 5; i >= 1; i--){%>
+                                    <%if(data['Q3']==i){%>
+                                        <td height="30" align="center"><input type="radio" name="es_id3" value="<%=i%>" checked disabled /></td>
+                                        <%}else{%>
+                                            <td height="30" align="center"><input type="radio" name="es_id3" value="<%=i%>" disabled /></td>
+                                            <%}%>
+
+                                                <%}%>
+                            </tr>
+                            <tr>
+                                <td height="30">&nbsp; 4.กิจกรรมนี้สามารถนำไปใช้ในชีวิตประจำวันได้</td>
+                                <%for (let i = 5; i >= 1; i--){%>
+                                    <%if(data['Q4']==i){%>
+                                        <td height="30" align="center"><input type="radio" name="es_id4" value="<%=i%>" checked disabled /></td>
+                                        <%}else{%>
+                                            <td height="30" align="center"><input type="radio" name="es_id4" value="<%=i%>" disabled /></td>
+                                            <%}%>
+
+                                                <%}%>
+                            </tr>
+                            <tr>
+                                <td height="30">&nbsp; 5.กิจกรรมมีความน่าสนใจ</td>
+                                <%for (let i = 5; i >= 1; i--){%>
+                                    <%if(data['Q5']==i){%>
+                                        <td height="30" align="center"><input type="radio" name="es_id5" value="<%=i%>" checked disabled /></td>
+                                        <%}else{%>
+                                            <td height="30" align="center"><input type="radio" name="es_id5" value="<%=i%>" disabled /></td>
+                                            <%}%>
+
+                                                <%}%>
+                            </tr>
+                            <tr>
+                                <td height="30">&nbsp; 6.ท่านได้รับความรู้จากการเข้าร่วมกิจกรรม</td>
+                                <%for (let i = 5; i >= 1; i--){%>
+                                    <%if(data['Q6']==i){%>
+                                        <td height="30" align="center"><input type="radio" name="es_id6" value="<%=i%>" checked disabled /></td>
+                                        <%}else{%>
+                                            <td height="30" align="center"><input type="radio" name="es_id6" value="<%=i%>" disabled /></td>
+                                            <%}%>
+
+                                                <%}%>
+                            </tr>
+
+                        </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-6">
+                    <br /><br />
+                    <b> ข้อเสนอแนะเพิ่มเติม </b> <br />
+                    <textarea name="es_complain" cols="80" rows="3" id="es_complain" class="form-control" disabled>
+                        <%=data['Complain']%>
+                                        </textarea>
+                    <br />
+
+
+
+                </div>
+            </div>
+
+            </form>
+
+    </section>
+    <script>
+        let sidebar = document.querySelector(".sidebar");
+        let closeBtn = document.querySelector("#btn");
+        let searchBtn = document.querySelector(".bx-search");
+
+        closeBtn.addEventListener("click", () => {
+            sidebar.classList.toggle("open");
+            menuBtnChange();
+        });
+
+        searchBtn.addEventListener("click", () => {
+            sidebar.classList.toggle("open");
+            menuBtnChange();
+        });
+
+
+        function menuBtnChange() {
+            if (sidebar.classList.contains("open")) {
+                closeBtn.classList.replace("bx-menu", "bx-menu-alt-right");
+            } else {
+                closeBtn.classList.replace("bx-menu-alt-right", "bx-menu");
+            }
+        }
+    </script>
+</body>
+
+</html>

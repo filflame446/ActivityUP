@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<script> 
+  const cookieSession = require('cookie-session');
+  const bcrypt = require('bcrypt');
+  const dbConnection = require('./views/database');
+  const session = require('express-session') 
+  </script>
+
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8">
+  
+    <link rel="stylesheet" type="text/css" href="/stylesheets/style.css" />
+   
+    <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   </head>
+<body>
+  <div class="sidebar">
+    <div class="logo-details">
+      <i class='bx bxl-c-plus-plus icon'></i>
+        <a class="logo_name" href="/Dashboard" >Activity</a>
+        <i class='bx bx-menu' id="btn" ></i>
+    </div>
+    <ul class="nav-list">
+      <li>
+          <i class='bx bx-search' ></i>
+         <input type="text" placeholder="Search...">
+         <span class="tooltip">Search</span>
+      </li>
+      <li>
+        <a href="/Dashboard">
+          <i class='bx bx-grid-alt'></i>
+          <span class="links_name">Dashboard</span>
+        </a>
+         <span class="tooltip">Dashboard</span>
+      </li>
+      <li>
+       <a href="/Dashboard">
+         <i class='bx bx-user' ></i>
+         <span class="links_name">ย้อนกลับ</span>
+       </a>
+       <span class="tooltip">ย้อนกลับ</span>
+     </li>
+     <li>
+     <li class="profile">
+         <div class="profile-details">
+           <img src="/photos/Logo.png" alt="profileImg">
+           <div class="name_job">
+             <div class="name"> <h5><%=user.name%></h5></div>
+             <div class="job">มหาวิทยาลัยพะเยา</div>
+           </div>
+         </div>
+        <a href="/users/logout" class="btn btn-danger">
+         <i class='bx bx-log-out' id="log_out" ></i>
+        </a>
+     </li>
+    </ul>
+  </div>
+  <section class="home-section">
+      <div class="text" >Dashboard </div> <%=user.role%> </br></div>
+        <!-- <table>
+            <tr>
+              <th>รายชื่อกิจกรรม</th>
+              <th>วันที่</th>
+              <th>เวลา</th>
+              <th>สถานที่</th>
+              <th>ชั่วโมงกิจกรรม</th>
+            </tr>
+            <tr>
+              <td><%=data.ActivityName%> </td>
+              <td><%=data.date %></td>
+              <td><%=data.time %></td>
+              <td><%=data.place %></td>
+              <td><%=data.score%></td>
+            </tr>
+          </table> -->
+  </section>
+  <script>
+  let sidebar = document.querySelector(".sidebar");
+  let closeBtn = document.querySelector("#btn");
+  let searchBtn = document.querySelector(".bx-search");
+
+  closeBtn.addEventListener("click", ()=>{
+    sidebar.classList.toggle("open");
+    menuBtnChange();
+  });
+
+  searchBtn.addEventListener("click", ()=>{ 
+    sidebar.classList.toggle("open");
+    menuBtnChange();
+  });
+
+  
+  function menuBtnChange() {
+   if(sidebar.classList.contains("open")){
+     closeBtn.classList.replace("bx-menu", "bx-menu-alt-right");
+   }else {
+     closeBtn.classList.replace("bx-menu-alt-right","bx-menu");
+   }
+  }
+  </script>
+</body>
+</html>

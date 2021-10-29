@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<script>
+    const cookieSession = require('cookie-session');
+    const bcrypt = require('bcrypt');
+    const session = require('express-session');
+
+
+    let id = 0
+</script>
+
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" type="text/css" href="/stylesheets/style.css" />
+
+    <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="logo-details">
+            <i class='bx bxl-c-plus-plus icon'></i>
+            <a class="logo_name" href="/Dashboardadmin">Activity</a>
+            <i class='bx bx-menu' id="btn"></i>
+        </div>
+        <ul class="nav-list">
+            <li>
+                <a href="/Dashboardadmin">
+                    <i class='bx bx-grid-alt'></i>
+                    <span class="links_name">หน้าหลัก</span>
+                </a>
+                <span class="tooltip">หน้าหลัก</span>
+            </li>
+            <li>
+                <li class="profile">
+                    <div class="profile-details">
+                        <img src="/photos/Logo.png" alt="profileImg">
+                        <div class="name_job">
+                            
+                            <div class="job">มหาวิทยาลัยพะเยา</div>
+                        </div>
+                    </div>
+                    <a href="/users/logout" class="btn btn-danger">
+                        <i class='bx bx-log-out' id="log_out"></i>
+                    </a>
+                </li>
+        </ul>
+    </div>
+    <section class="home-section">
+        
+        <div class="text">
+            <%=weingName%>
+        </div>
+        <table>
+            <tr>
+                <th>id</th>
+                <th>ชื่อ-นามสกลุ</th>
+                
+
+            </tr>
+            <tr>
+                <% data.forEach(function(data){%>
+                    <td>
+                        <%=data.id %>
+                    </td>
+                    <td>
+                        <%=data.name %>
+                    </td>
+
+            </tr>
+            <% });%>
+        </table>
+        <div>
+        </div>
+        </br>
+        </div>
+    </section>
+
+    <script type="module">
+        import date from 'app.js'; import dateFormat from "dateformat";
+    </script>
+    <script>
+        let sidebar = document.querySelector(".sidebar");
+        let closeBtn = document.querySelector("#btn");
+        let searchBtn = document.querySelector(".bx-search");
+
+        closeBtn.addEventListener("click", () => {
+            sidebar.classList.toggle("open");
+            menuBtnChange();
+        });
+
+        searchBtn.addEventListener("click", () => {
+            sidebar.classList.toggle("open");
+            menuBtnChange();
+        });
+
+
+        function menuBtnChange() {
+            if (sidebar.classList.contains("open")) {
+                closeBtn.classList.replace("bx-menu", "bx-menu-alt-right");
+            } else {
+                closeBtn.classList.replace("bx-menu-alt-right", "bx-menu");
+            }
+        }
+    </script>
+</body>
+
+</html>

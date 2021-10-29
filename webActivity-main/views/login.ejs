@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.min.js"></script>
+    
+</head>
+
+<body>
+    <%- include ('layout') %>
+    <div class="container">
+    </br>
+            <h2 align="center">Login </h2>
+                <form class="form-login" action="/users/login" method="POST">
+                    <div class="form-login">
+                        <div class="form-login">
+                            <label for="">Username</label>
+                            <input type="text" name="username" value="" class="form-control" autocomplete="off" label alt="ชื่อผู้ใช้งาน" aria-placeholder="ชื่อผู้ใช้งาน" placeholder="Username"></label>
+
+                            <div class="form-login">
+                                <label for="">Password</label>
+                                <input type="password" name="password" value="" class="form-control" placeholder="Password">
+                            </div>
+                            <input type="submit" name="" value="Login" class="button btn-success" > <a type="button" href="/home" value="Back" class="button2 btn" >Back</a>
+
+                </form>
+            </div>
+                <script type="text/javascript">
+                    $('#messages').addClass('alert alert-danger');
+                </script>
+
+
+</body>
+
+</html>

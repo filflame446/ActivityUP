@@ -1,0 +1,41 @@
+<!-- <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+    <a href="/users/login" class="navbar-brand">Login System</a>
+    <ul class="navbar-navbar">
+        <%if(locals.user){%>
+            <li class="navbar-item">
+                <a href="/users/Dashboard" class="nav-link">Stu</a>
+            </li>
+            <li class="navbar-item">
+                <a href="/users/logout" class="nav-link">Logout</a>
+            </li>
+            <%}%>
+                <%if(!locals.user){%>
+                    <li class="navbar-item">
+                        <a href="/users/register" class="nav-link">Register</a>
+                    </li>
+                    <li class="navbar-item">
+                        <a href="/users/login" class="nav-link">Login</a>
+                    </li>
+                    <%}%>
+    </ul> -->
+<link rel="stylesheet" type="text/css" href="/stylesheets/style.css"/>
+</nav>
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+    <a href="/home" class="navbar-brand"> <h6>เวียงมหาวิทยาลัยพะเยา</h6> </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class=" navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <%if(!locals.user){%>
+            <li class=" navbar-register">
+                <a href="/users/register" class="nav-link"><h6>Register</h6></a>
+            </li>
+            <li class=" navbar-login">
+                <a href="/users/login" class="nav-link"><h6>Login</h6></a>
+            </li>
+            <%}%>
+      </ul>
+    </div>
+  </nav>
+ 

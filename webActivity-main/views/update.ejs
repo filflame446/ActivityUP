@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<script>
+    let id = 0
+</script>
+
+<head>
+    <meta charset="UTF-8">
+    <!--<title> Responsive Sidebar Menu  | CodingLab </title>-->
+    <link rel="stylesheet" type="text/css" href="/stylesheets/style.css" />
+    <!-- Boxicons CDN Link -->
+    <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        input[type=text],
+        select,
+        textarea {
+            width: 50%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical;
+        }
+    </style>
+
+</head>
+
+<body>
+    <section class="grid-item update">
+        <h3>แก้ไขกิจกรรม</h3>
+
+        <form action="/update/<%=data.No%>" method="post">
+            <div class="container flex-col">
+                <div class="input flex-row">
+                    <label class="labelName" for="ActivityName">ชื่อกิจกรรม</label>
+                    <input class="detail" type="text" id="ActivityName" name="ActivityName" value="<%=data.ActivityName%>">
+                </div>
+                <input type="hidden" name="id" value="<%=data.No %>">
+                <div class="input flex-row">
+                    <label class="labelName" for="place">สถานที่</label>
+                    <input class="detail" type="text" id="place" name="place" value="<%=data.place%>">
+                </div>
+                <div class="input flex-row">
+                    <label class="labelName" for="startTime">วัน/เวลาเริ่มกิจกรรม</label>
+                    <input type="datetime-local" id="startTime" name="startTime" value="<%=data.startTime%>">
+                </div>
+                <div class="input flex-row">
+                    <label class="labelName" for="endTime">วัน/เวลาสิ้นสุดกิจกรรม</label>
+                    <input type="datetime-local" id="endTime" name="endTime" value="<%=data.endTime%>">
+                </div>
+            </div>
+            <button class='button' type="submit">แก้ไขกิจกรรม</button><a class='button' href="/Dashboardadmin">ย้อนกลับ</a>
+        </form>
+
+    </section>
+</body> 
+
+</html>
