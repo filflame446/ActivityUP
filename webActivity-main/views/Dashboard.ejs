@@ -85,12 +85,18 @@
                         <% if(data.Joined){ %>
                             <i class="show-icon-true fas fa-check"></i>
                             <!-- / -->
+                            <% }else{ %>
+                                x
                             <% } %>
                     </td>
                     <td style="text-align:center;">
+                        <% if(data.Joined){ %>
                         <a href=" /assessmentform/<%=data.ActivityName %>/<%=userID%>">
                             <i class="fas fa-tasks"></i>
                         </a>
+                        <% }else{ %>
+                            
+                        <% } %>
 
                     </td>
 

@@ -28,18 +28,16 @@
 <body>
     <section class="grid-item insert">
         <h3>สร้างกิจกรรม</h3>
-        <h3 style="color: red;">
-            <%=alarmMessage%>
-        </h3>
+        <input type="hidden" id="messagealert" value="<%=alarmMessage%>">        
         <form action="/insert" method="post" id="myForm">
             <div class="container flex-col">
                 <div class="input flex-row">
                     <label class="labelName" for="ActivityName">ชื่อกิจกรรม</label>
-                    <input class="detail" type="text" id="ActivityName" name="ActivityName" value="<%=QActivity%>">
+                    <input class="detail" type="text" id="ActivityName" name="ActivityName" value="<%=QActivity%>" required >
                 </div>
                 <div class="input flex-row">
                     <label class="labelName" for="place">สถานที่</label>
-                    <input class="detail" type="text" id="place" name="place" value="<%=Qplace%>">
+                    <input class="detail" type="text" id="place" name="place" value="<%=Qplace%>" required >
                 </div>
                 <div class=" input flex-row ">
                     <label class="labelName " for="startTime ">วัน/เวลาเริ่มกิจกรรม</label>
@@ -51,12 +49,28 @@
                     <input type="datetime-local" id="endTime" name="endTime" placeholder="dd/mm/yyyy" value="<%=endDate%>">
                 </div>
             </div>
-            <button class='button btn' type="button " onclick="checkMonth();">สร้าง</button><a class='button2 btn' href=" /Dashboardadmin ">ย้อนกลับ</a>
+            <button class='button btn' type="submit" onclick="checkMonth();">สร้าง</button><a class='button2 btn' href=" /Dashboardadmin ">ย้อนกลับ</a>
         </form>
     </section>
 
     <script>
+
+        if(document.getElementById("messagealert").value!="")
+        {
+            alert(document.getElementById("messagealert").value);
+            document.getElementById("messagealert").value="";
+        }
+
         function checkMonth() {
+
+            if(document.getElementById("ActivityName").value==""){
+                return false;
+            }
+
+            if(document.getElementById("place").value==""){
+                return false;
+            }
+
             const startTimeSelected = document.getElementById("startTime").value;
             const endTimeSelected = document.getElementById("endTime").value;
             const startTime = new Date(startTimeSelected);
@@ -82,8 +96,10 @@
             if (!result) {
                 alert('อย่าเลือกเวลาย้อนหลัง');
                 console.log('อย่าเลือกเวลาย้อนหลัง');
+                return false;
             } else {
-                document.getElementById("myForm").submit();
+                //document.getElementById("myForm").submit();
+                return true;
             }
 
         }

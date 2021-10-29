@@ -47,7 +47,8 @@ router.get('/Dashboard', enSureAuthencated, authRole('Student'), async function(
         {
             $group: { _id: { ActivityName: "$ActivityName", startTime: "$startTime", endTime: "$endTime", score: "$score", studenId: "$logDetail.id" } }
         },
-    ]);
+    ])
+    ;
 
     let userID = req.user.username;
     let datas = [];
@@ -55,12 +56,21 @@ router.get('/Dashboard', enSureAuthencated, authRole('Student'), async function(
         studentList = doc['_id']['studenId']
         if (studentList.includes(userID)) {
             doc['_id']['Joined'] = true;
-            datas.push(doc['_id']);
+            
         } else {
             doc['_id']['Joined'] = false;
         }
         datas.push(doc['_id']);
     }
+
+    datas.sort(function(a, b) {
+        var keyA = new Date(a.Joined);
+        var  keyB = new Date(b.Joined);
+        // Compare the 2 dates
+        if (keyA > keyB) return -1;
+        if (keyA < keyB) return 1;
+        return 0;
+      });
 
     console.log(datas);
     res.render('Dashboard', { 'data': users, 'data2': datas, 'userID': userID });
@@ -114,37 +124,57 @@ router.post('/insert', async function(req, res, next) {
 
     let isDuplicateActivity = false;
 
+    let startDate = new Date(req.body.startTime);
+    let endDate =new Date(req.body.endTime);
+        
+    let startDateStr = startDate.getFullYear() + "-" + pad(startDate.getMonth() + 1, 2) + "-" + pad(startDate.getDate(), 2) + "T" + pad(startDate.getHours(), 2) + ":" + pad(startDate.getMinutes(), 2);
+    let endDateStr = endDate.getFullYear() + "-" + pad(endDate.getMonth() + 1, 2) + "-" + pad(endDate.getDate(), 2) + "T" + pad(endDate.getHours(), 2) + ":" + pad(endDate.getMinutes(), 2);
+
     console.log(chkData);
     if (chkData != null) {
         console.log("Check data not null");
         isDuplicateActivity = true;
     }
 
-    if (isDuplicateActivity) {
-        let startDate = new Date();
-        let endDate = new Date();
-        //2018-06-12T19:30
-        let stardDateStr = startDate.getFullYear() + "-" + pad(startDate.getMonth() + 1, 2) + "-" + pad(startDate.getDate(), 2) + "T" + pad(startDate.getHours(), 2) + ":" + pad(startDate.getMinutes(), 2);
-        let endDateStr = endDate.getFullYear() + "-" + pad(endDate.getMonth() + 1, 2) + "-" + pad(endDate.getDate(), 2) + "T" + pad(endDate.getHours(), 2) + ":" + pad(endDate.getMinutes(), 2);
-        console.log("is duplicate");
-        res.render("insert", { 'startDate': stardDateStr, 'endDate': endDateStr, 'alarmMessage': 'ชื่อกิจกรรมซ้ำ', 'Qplace': req.body.place, 'QActivity': req.body.ActivityName });
+    if (isDuplicateActivity) {        
+        res.render("insert", { 'startDate': startDateStr, 'endDate': endDateStr, 'alarmMessage': 'ชื่อกิจกรรมซ้ำ', 'Qplace': req.body.place, 'QActivity': req.body.ActivityName });
         return;
     }
 
-    if (diffTime < 0) {
-        return res.redirect('/insert');
+    scores = (Math.floor(diffTime / 3600000) > 8.0) ? 8 : (Math.floor(diffTime / 3600000));    
+    console.log("Score : " + scores);
+
+    if (scores <= 0) {
+        res.render("insert", { 'startDate': startDateStr, 'endDate': endDateStr, 'alarmMessage': 'กรุณากำหนดเวลากิจกรรมให้ถูกต้อง', 'Qplace': req.body.place, 'QActivity': req.body.ActivityName });
+        return;
     }
 
-    scores = (Math.floor(diffTime / 3600000) > 8.0) ? 8 : (Math.floor(diffTime / 3600000));
-    console.log("Score : " + scores);
+    await client.connect();
+    const chkTime = await client.db('LoginDB').collection('data').findOne(
+        { 
+            $or: [ 
+            {$and : [{startTime:{$lte:startDate}},{endTime:{$gte:startDate}}]},
+            {$and : [{startTime:{$lte:endDate}},{endTime:{$gte:endDate}}]}
+            ]
+        }
+        );
+    await client.close();
+
+    if (chkTime != null) {
+        console.log("Conflict time with activity :"+ chkTime['ActivityName']+" "+chkTime['startTime']+"-"+chkTime['endTime']);
+        res.render("insert", { 'startDate': startDateStr, 'endDate': endDateStr, 'alarmMessage': 'เวลาที่เลือกมีการจัดกิจกรรมอื่นอยู่ '+chkTime['ActivityName'] , 'Qplace': req.body.place, 'QActivity': req.body.ActivityName });
+        return;
+    }
+
+    
 
     if (diffTime > 0) {
         await client.connect();
         await client.db('LoginDB').collection('data').insertOne({
             No: Date.now(),
             ActivityName: req.body.ActivityName,
-            startTime: req.body.startTime,
-            endTime: req.body.endTime,
+            startTime: startDate,
+            endTime: endDate,
             place: req.body.place,
             score: scores,
             count: 0
@@ -209,7 +239,8 @@ router.get('/listweing/:activityname', async(req, res, next) => {
     const activityName = req.params.activityname;
     const client = new MongoClient(uri);
     await client.connect();
-    let weingList = ['เวียงบัว', 'เวียงเชียงเเรง', 'เวียงจอมทอง', 'เวียงกาหลวง', 'เวียงลอ', 'เวียงน้ำเต้า'];
+    let weingList = ['bour', 'chiangrang', 'jomtong', 'kaluang', 'lor', 'namtao'];
+    let weingListThai = ['เวียงบัว', 'เวียงเชียงเเรง', 'เวียงจอมทอง', 'เวียงกาหลวง', 'เวียงลอ', 'เวียงน้ำเต้า'];
     let weingCount = [0, 0, 0, 0, 0, 0];
 
     console.log(activityName);
@@ -249,6 +280,7 @@ router.get('/listweing/:activityname', async(req, res, next) => {
     let datas = [{
         'ActivityName': activityName,
         'WeingList': weingList,
+        'WeingListThai': weingListThai,
         'WeingCount': weingCount,
     }];
 
@@ -258,7 +290,7 @@ router.get('/listweing/:activityname', async(req, res, next) => {
 });
 
 router.get('/listname/:weingname/:activityname', async(req, res, next) => {
-    const weingName = req.params.weingname;
+    let weingName = req.params.weingname;
     const activityName = req.params.activityname;
     const client = new MongoClient(uri);
     await client.connect();
@@ -313,6 +345,15 @@ router.get('/listname/:weingname/:activityname', async(req, res, next) => {
         }
 
     }
+
+    let weingList = ['bour', 'chiangrang', 'jomtong', 'kaluang', 'lor', 'namtao'];
+    let weingListThai = ['เวียงบัว', 'เวียงเชียงเเรง', 'เวียงจอมทอง', 'เวียงกาหลวง', 'เวียงลอ', 'เวียงน้ำเต้า'];
+    let indexWeing = weingList.indexOf(weingName);
+    if(indexWeing>-1)
+    {
+        weingName = weingListThai[indexWeing];
+    }
+    console.log(weingName);
 
     console.log(datas);
     await client.close();

@@ -527,12 +527,13 @@ div.flex-col {
     flex-direction: column;
     align-items: center;
     padding: 2rem;
+    padding-right: 17rem;
 }
 
 .labelName {
-    width: 240px;
+    width: 400px;
     text-align: end;
-    padding: 5px;
+    padding: 10px;
 }
 
 .detail {
