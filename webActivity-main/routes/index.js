@@ -16,20 +16,13 @@ router.get('/', function(req, res, next) {
     res.redirect('/home')
 });
 
-// router.get('/Dashboard', enSureAuthencated, authRole('Student'), async function(req, res, next) {
-//     const client = new MongoClient(uri);
-//     await client.connect();
-//     const users = await client.db('LoginDB').collection('data').findOne({});
-//     console.log(users);
-//     res.render('Dashboard', { 'data': users });
-// });
 /////////////////////////////////////////////////////////////
-router.get('/DashboardProfile', enSureAuthencated, authRole('Student'), async function(req, res, next) {
+router.get('/Dataassessment', async function(req, res, next) {
     const client = new MongoClient(uri);
     await client.connect();
     const users = await client.db('LoginDB').collection('data').findOne({});
     console.log(users);
-    res.render('DashboardProfile', { 'data': users });
+    res.render('Dataassessment', { 'data': users });
 });
 /////////////////////////////////////////////////////////////
 router.get('/Dashboard', enSureAuthencated, authRole('Student'), async function(req, res, next) {
