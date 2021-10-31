@@ -73,9 +73,14 @@
                 <div class="col-md-3">
                     กิจกรรม :
                     <%=activityName%>
-                        <br>
-                    เพศ : <input type="radio" name="es_id2" value="M" /> ชาย <input type="radio" name="es_id2" value="W" /> หญิง
-                          
+                        <br> 
+                    เพศ :<%for (let i = 2; i >= 1; i--){%>
+                            <%if(data['S']==i){%>
+                               <input type="radio" name="es_id11" value="<%=i%>" checked disabled />
+                             <%}else{%>
+                                 <input type="radio" name="es_id11" value="<%=i%>" disabled/>
+                                     <%}%>
+                                         <%}%>
                 </div>
                 
                 <div class="col-md-9"> <br />

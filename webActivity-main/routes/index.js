@@ -16,6 +16,13 @@ router.get('/', function(req, res, next) {
     res.redirect('/home')
 });
 
+// router.get('/Dashboard', enSureAuthencated, authRole('Student'), async function(req, res, next) {
+//     const client = new MongoClient(uri);
+//     await client.connect();
+//     const users = await client.db('LoginDB').collection('data').findOne({});
+//     console.log(users);
+//     res.render('Dashboard', { 'data': users });
+// });
 /////////////////////////////////////////////////////////////
 router.get('/Dataassessment', async function(req, res, next) {
     const client = new MongoClient(uri);
@@ -138,7 +145,7 @@ router.post('/insert', async function(req, res, next) {
     console.log("Score : " + scores);
 
     if (scores <= 0) {
-        res.render("insert", { 'startDate': startDateStr, 'endDate': endDateStr, 'alarmMessage': 'กรุณากำหนดเวลากิจกรรมให้ถูกต้อง', 'Qplace': req.body.place, 'QActivity': req.body.ActivityName });
+        res.render("insert", { 'startDate': startDateStr, 'endDate': endDateStr, 'alarmMessage': 'กรุณากำหนดเวลากิจกรรมให้ถูกต้อง เวลาสิ้นสุดกิจกรรมต้องมากกว่าเวลาเริ่มกิจกรรม', 'Qplace': req.body.place, 'QActivity': req.body.ActivityName });
         return;
     }
 
@@ -200,6 +207,10 @@ router.post('/update/:id', async(req, res) => {
         const id = parseInt(req.params.id);
         const client = new MongoClient(uri);
         const diffTime = new Date(req.body.endTime).getTime() - new Date(req.body.startTime).getTime();
+
+        let startDate = new Date(req.body.startTime);
+        let endDate =new Date(req.body.endTime);
+
         scores = (Math.floor(diffTime / 3600000) > 8.0) ? 8 : (Math.floor(diffTime / 3600000));
         console.log("Score : " + scores);
         if (diffTime < 0) return res.redirect('/update/<%=data.No%>');
@@ -207,8 +218,8 @@ router.post('/update/:id', async(req, res) => {
         await client.db('LoginDB').collection('data').updateOne({ 'No': id }, {
             "$set": {
                 ActivityName: req.body.ActivityName,
-                startTime: req.body.startTime,
-                endTime: req.body.endTime,
+                startTime: startDate,
+                endTime: endDate,
                 place: req.body.place,
                 score: scores,
             }
@@ -434,6 +445,7 @@ router.get("/assessmentform/:activityName/:id", async function(req, res) {
 router.post('/saveassessment/:activityName/:id', async(req, res) => {
     const studentID = parseInt(req.params.id);
     const activityName = req.params.activityName;
+    const selectsex = parseInt(req.body.es_id11);
     const select1 = parseInt(req.body.es_id1);
     const select2 = parseInt(req.body.es_id2);
     const select3 = parseInt(req.body.es_id3);
@@ -444,6 +456,7 @@ router.post('/saveassessment/:activityName/:id', async(req, res) => {
 
     console.log(studentID);
     console.log(activityName);
+    console.log(selectsex);
     console.log(select1);
     console.log(select2);
     console.log(select3);
@@ -458,6 +471,7 @@ router.post('/saveassessment/:activityName/:id', async(req, res) => {
         SaveTime: Date.now(),
         StudentID: studentID,
         ActivityName: activityName,
+        S: selectsex,
         Q1: select1,
         Q2: select2,
         Q3: select3,

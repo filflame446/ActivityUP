@@ -549,8 +549,14 @@ div.flex-col {
 .show-icon-true {
     color: #008f00;
     font-size: 1.2rem;
+
 }
 
+.show-icon-flase {
+    color: #ff0000;
+    font-size: 1.2rem;
+    
+}
 .fa,
 .fas {
     font-weight: 900;
