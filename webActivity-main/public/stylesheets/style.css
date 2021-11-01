@@ -453,6 +453,7 @@ table {
 th,
 td {
     text-align: left;
+    border: 1px solid gray;
     padding: 8px;
 }
 
@@ -522,12 +523,26 @@ div.flex-row {
     margin-bottom: 1rem;
 }
 
+div.flex-row100 {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
 div.flex-col {
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 2rem;
     padding-right: 17rem;
+}
+
+div.flex-col100 {    
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;    
 }
 
 .labelName {

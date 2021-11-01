@@ -67,24 +67,25 @@
         </ul>
     </div>
     <section class="home-section" style="padding-left:20px;padding-right: 20px;">
+        <form id="formqsys" name="formqsys" method="post" action="/saveassessment/<%=activityName%>/<%=studentID%>">
         <div class="text">ประเมินความพึงพอใจต่อการเข้าร่วมกิจกรรม </div>
         <div class="container">
             <div class="row">
                 <div class="col-md-3">
                     กิจกรรม :
                     <%=activityName%>
-                        <br> 
-                    เพศ :<%for (let i = 2; i >= 1; i--){%>
-                            <%if(data['S']==i){%>
-                               <input type="radio" name="es_id11" value="<%=i%>" checked disabled />
+                        <br> เพศ :
+                            <%if(data['S']==1){%>                               
+                               <input type="radio" name="es_sex" value="1" disabled checked /> ชาย 
+                                <input type="radio" name="es_sex" value="2" disabled /> หญิง 
                              <%}else{%>
-                                 <input type="radio" name="es_id11" value="<%=i%>" disabled/>
-                                     <%}%>
-                                         <%}%>
+                                <input type="radio" name="es_sex" value="1" disabled /> ชาย 
+                                <input type="radio" name="es_sex" value="2" disabled checked /> หญิง 
+                                     <%}%>                                         
                 </div>
                 
                 <div class="col-md-9"> <br />
-                    <form id="formqsys" name="formqsys" method="post" action="/saveassessment/<%=activityName%>/<%=studentID%>">
+                    
                         <table width="70%" border="1" align="center" cellpadding="0" cellspacing="0" class="table table-bordered table-hover">
                             <tr>
                                 <td width="75%" rowspan="2" align="center">
@@ -178,7 +179,7 @@
                     <textarea name="es_complain" cols="80" rows="3" id="es_complain" class="form-control" disabled>
                         <%=data['Complain']%>
                                         </textarea>
-                    <br />
+                    <br/>
 
 
 

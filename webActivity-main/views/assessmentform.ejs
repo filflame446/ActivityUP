@@ -65,16 +65,18 @@
         </ul>
     </div>
     <section class="home-section" style="padding-left:20px;padding-right: 20px;">
+        <form id="formqsys" name="formqsys" method="post" action="/saveassessment/<%=activityName%>/<%=studentID%>">
         <div class="text">ประเมินความพึงพอใจต่อการเข้าร่วมกิจกรรม </div>
         <div class="container">
             <div class="row">
+                
                 <div class="col-md-3">
                     กิจกรรม :
                     <%=activityName%>
                         <br>
                     เพศ : 
-                          <input type="radio" name="es_id11" value="men" required /> ชาย 
-                          <input type="radio" name="es_id11" value="women" required /> หญิง 
+                          <input type="radio" name="es_sex" value="1" required /> ชาย 
+                          <input type="radio" name="es_sex" value="2" /> หญิง 
                 </div>
                 <div class="col-md-3">
                     
@@ -82,7 +84,7 @@
                 </div>
                 
                 <div class="col-md-9"> <br />
-                    <form id="formqsys" name="formqsys" method="post" action="/saveassessment/<%=activityName%>/<%=studentID%>">
+                    
                         <table width="70%" border="1" align="center" cellpadding="0" cellspacing="0" class="table table-bordered table-hover">
                             <tr>
                                 <td width="75%" rowspan="2" align="center">

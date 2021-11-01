@@ -1,10 +1,6 @@
 <!DOCTYPE html>
 <script>
-    const cookieSession = require('cookie-session');
-    const bcrypt = require('bcrypt');
-    const session = require('express-session');
-
-
+    
     let id = 0
 </script>
 
@@ -14,9 +10,20 @@
     <meta charset="UTF-8">
 
     <link rel="stylesheet" type="text/css" href="/stylesheets/style.css" />
-
+    <script src="https://kit.fontawesome.com/abf8838859.js" crossorigin="anonymous"></script>
     <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .nightStyle{
+            text-align: right;    
+        }
+        td{
+            text-align: center;
+        }
+        th{
+            text-align: center;
+        }
+    </style>    
 </head>
 
 <body>
@@ -34,13 +41,7 @@
                 </a>
                 <span class="tooltip">หน้าหลัก</span>
             </li>
-            <li>
-                <a href="/Dataassessment">
-                    <i class='bx bx-task'></i>
-                    <span class="links_name">ดูสรุปผลแบบประเมิน</span>
-                </a>
-                <span class="tooltip">ดูสรุปผลแบบประเมิน</span>
-            </li>
+        
             <li>
                 <li class="profile">
                     <div class="profile-details">
@@ -62,21 +63,24 @@
                 </li>
         </ul>
     </div>
-    <section class="home-section">
+    <section class="home-section" style="padding-left: 10px; padding-right: 10px;">
         <div class="text">Dashboard Admin </div>
         <a class="button " href="/insert">สร้างกิจกรรม</a>
-        <table>
+        <table >
             <tr>
                 <th>รายชื่อกิจกรรม</th>
                 <th>วันที่/เวลา</th>
                 <th>สถานที่</th>
                 <th>ชั่วโมงกิจกรรม</th>
                 <th>จำนวนคนที่เข้าร่วม</th>
-                <th colspan="3"></th>
+                <th></th>
+                <th></th>
+                <th>ผลแบบสำรวจ</th>
+                <th></th>
             </tr>
             <tr>
                 <% data.forEach(function(data){%>
-                    <td>
+                    <td >
                         <%=data.ActivityName %>
                     </td>
                     <td>
@@ -91,8 +95,16 @@
                     </td>
                     <td>
                         <%=data.count %>
-                            <a class='button' href="/listweing/<%=data.ActivityName%>">รายชื่อผู้เข้าร่วม</a> </td>
-                    <td><a class='button' href=" /update/<%=data.No%>">แก้ไขกิจกรรม</a>
+                            
+                    </td>
+                    <td>
+                        <a class='button' href="/listweing/<%=data.ActivityName%>">รายชื่อผู้เข้าร่วม</a> 
+                    </td>
+                    <td>
+                        <a class='button' href=" /update/<%=data.No%>">แก้ไขกิจกรรม</a>
+                    </td>
+                    <td>
+                        <a class='button' href=" /Dataassessment/<%=data.ActivityName%>"><i class="fas fa-tasks"></i></a>
                     </td>
                     <td>
                         <form method="post" action="/delete/<%= data.No %>">
@@ -102,7 +114,7 @@
                                     <button class='button' type="submit" onclick="return confirm('ยืนยันที่จะลบหรือไม่');">ลบกิจกรรม</button>
                                     <%}%>
                         </form>
-                        <td>
+                    </td>
             </tr>
             <% });%>
         </table>
@@ -118,18 +130,13 @@
     <script>
         let sidebar = document.querySelector(".sidebar");
         let closeBtn = document.querySelector("#btn");
-        let searchBtn = document.querySelector(".bx-search");
-
+        
         closeBtn.addEventListener("click", () => {
             sidebar.classList.toggle("open");
             menuBtnChange();
         });
 
-        searchBtn.addEventListener("click", () => {
-            sidebar.classList.toggle("open");
-            menuBtnChange();
-        });
-
+       
 
         function menuBtnChange() {
             if (sidebar.classList.contains("open")) {

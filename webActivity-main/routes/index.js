@@ -8,6 +8,8 @@ var id = require('mongodb').id;
 const { stringify } = require('querystring');
 const { count } = require('console');
 
+const Chart = require('chart.js');
+
 var passport = require('passport');
 const { start } = require('repl');
 
@@ -24,12 +26,59 @@ router.get('/', function(req, res, next) {
 //     res.render('Dashboard', { 'data': users });
 // });
 /////////////////////////////////////////////////////////////
-router.get('/Dataassessment', async function(req, res, next) {
+router.get('/Dataassessment/:activityname', async function(req, res, next) {
+    const activityName = req.params.activityname;
+
+    let label1 = ['Q1','Q2','Q3','Q4','Q5','Q6']
+    let data1 = [0,0,0,0,0,0]
+
+    let label2 = ['ชาย','หญิง']
+    let data2 = [0,0]
+
     const client = new MongoClient(uri);
-    await client.connect();
-    const users = await client.db('LoginDB').collection('data').findOne({});
-    console.log(users);
-    res.render('Dataassessment', { 'data': users });
+    await client.connect();    
+    const OverAllData = await client.db('LoginDB').collection('assessmentform').find({ActivityName:activityName}).toArray();
+    await client.close();
+
+    console.log(activityName);
+    let countForm = 0;
+    if(OverAllData!=null)    {
+        console.log(OverAllData);
+        countForm = OverAllData.length;
+
+        for(i=0;i<countForm;i++){
+            for(j=0;j<data1.length;j++)
+            {
+                data1[j] += OverAllData[i]['Q'+(j+1)];
+            }
+            if(OverAllData[i]['S']==1)
+            {
+                data2[0]+=1;
+            }
+            else
+            {
+                data2[1]+=1;
+            }            
+        }
+
+        for(j=0;j<data1.length;j++)
+            {
+                if(countForm==0)
+                {
+                    data1[j] = 0;
+                }
+                else
+                {
+                    data1[j] = data1[j]/countForm;
+                }
+                
+            }
+    }
+
+    console.log(countForm);
+
+    res.render('Dataassessment', { 'activityName': activityName,'label1':label1,'data1':data1,'label2':label2,'data2':data2,'countForm':countForm });
+    
 });
 /////////////////////////////////////////////////////////////
 router.get('/Dashboard', enSureAuthencated, authRole('Student'), async function(req, res, next) {
@@ -197,8 +246,29 @@ router.get('/update/:id', async function(req, res, next) {
     await client.connect();
     const users = await client.db('LoginDB').collection('data').findOne({ "No": id });
     await client.close();
+
+    
+    let startDateStr="";
+    let endDateStr="";
+    let Qplace="";
+    let QActivity="";
+
+    if(users!=null){
+
+        let startDate = users['startTime'];
+        let endDate = users['endTime'];
+
+        Qplace = users['place'];
+        QActivity = users['ActivityName'];
+
+        startDateStr = startDate.getFullYear() + "-" + pad(startDate.getMonth() + 1, 2) + "-" + pad(startDate.getDate(), 2) + "T" + pad(startDate.getHours(), 2) + ":" + pad(startDate.getMinutes(), 2);
+        endDateStr = endDate.getFullYear() + "-" + pad(endDate.getMonth() + 1, 2) + "-" + pad(endDate.getDate(), 2) + "T" + pad(endDate.getHours(), 2) + ":" + pad(endDate.getMinutes(), 2);
+
+    }
+
+
     console.log(users);
-    res.render('update', { 'data': users })
+    res.render('update', { 'data': users,'startDate': startDateStr, 'endDate': endDateStr,'Qplace': Qplace, 'QActivity': QActivity })
 });
 
 ////////////////////update/////////////////////////////
@@ -445,7 +515,8 @@ router.get("/assessmentform/:activityName/:id", async function(req, res) {
 router.post('/saveassessment/:activityName/:id', async(req, res) => {
     const studentID = parseInt(req.params.id);
     const activityName = req.params.activityName;
-    const selectsex = parseInt(req.body.es_id11);
+    
+    const selectsex = parseInt(req.body.es_sex);
     const select1 = parseInt(req.body.es_id1);
     const select2 = parseInt(req.body.es_id2);
     const select3 = parseInt(req.body.es_id3);

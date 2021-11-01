@@ -16,9 +16,11 @@
 <body>
     <%- include ('layout') %>
     <div class="container">
+        
     </br>
             <h2 align="center">Login </h2>
-                <form class="form-login" action="/users/login" method="POST">
+            <div id="messages" >กรุณาทำการ Login ก่อนใช้งานระบบ</div>
+                <form id="form-login" class="form-login" action="/users/login" method="POST">
                     <div class="form-login">
                         <div class="form-login">
                             <label for="">Username</label>
@@ -28,15 +30,39 @@
                                 <label for="">Password</label>
                                 <input type="password" name="password" value="" class="form-control" placeholder="Password">
                             </div>
-                            <input type="submit" name="" value="Login" class="button btn-success" > <a type="button" href="/home" value="Back" class="button2 btn" >Back</a>
+                            <input type="button" name="Login" value="Login" class="button btn-success" onclick="CheckInput();" > <a type="button" href="/home" value="Back" class="button2 btn" >Back</a>
 
                 </form>
             </div>
-                <script type="text/javascript">
-                    $('#messages').addClass('alert alert-danger');
-                </script>
-
+            
 
 </body>
 
 </html>
+
+<script type="text/javascript">
+    document.querySelector("#messages").setAttribute('class','alert alert-success');
+    document.querySelector("#messages").setAttribute('style','display:none');
+
+    function CheckInput()
+    {
+        let userName = document.getElementsByName("username")[0].value;
+        let password = document.getElementsByName("password")[0].value;
+        console.log(userName);
+        console.log(password);
+        if(userName=='' || password=='')
+        {            
+            document.querySelector("#messages").setAttribute('class','alert alert-danger');
+            document.querySelector("#messages").setAttribute('style','display:true');
+            document.querySelector("#messages").innerHTML ='กรุณากรอกรหัสผู้ใช้งาน';
+            return false;
+        }
+        else
+        {
+            console.log("Login...");
+            document.getElementById("form-login").submit();
+            return true;
+        }
+    }
+    
+</script>

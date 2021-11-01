@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<script>   
+  
+  </script>
+
+<html lang="en" dir="ltr">
+  <head>
+
+        
+      <script src="https://unpkg.com/@mongodb-js/charts-embed-dom"></script>
+   
+
+    <meta charset="UTF-8">
+  
+    <link rel="stylesheet" type="text/css" href="/stylesheets/style.css" />
+   
+    <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+     <style>
+      #chart {
+        width: 400px;
+        height: 400px;
+        margin: 0 auto;
+        border: 1px solid #ccc;
+      }
+      #chart2 {
+        width: 400px;
+        height: 400px;
+        margin: 0 auto;
+        border: 1px solid #ccc;
+      }
+    </style>
+   </head>
+<body>
+  <input type="hidden" id="activityName" name="activityName" value="<%=activityName%>" >
+  <div class="sidebar">
+    <div class="logo-details">
+      <i class='bx bxl-c-plus-plus icon'></i>
+        <a class="logo_name" href="/Dashboard" >Activity</a>
+        <i class='bx bx-menu' id="btn" ></i>
+    </div>
+    <ul class="nav-list">
+      <li>
+       <a href="/Dashboardadmin">
+         <i class='bx bx-left-arrow-circle' ></i>
+         <span class="links_name">ย้อนกลับ</span>
+       </a>
+       <span class="tooltip">ย้อนกลับ</span>
+     </li>
+     <li>
+     <li class="profile">
+         <div class="profile-details">
+           <img src="/photos/Logo.png" alt="profileImg">
+           <div class="name_job">
+             
+             <div class="job">มหาวิทยาลัยพะเยา</div>
+           </div>
+         </div>
+        <a href="/users/logout" class="btn btn-danger">
+         <i class='bx bx-log-out' id="log_out" ></i>
+        </a>
+     </li>
+    </ul>
+  </div>
+  <section class="home-section">
+      <div class="text" >ข้อมูลสรุปผลแบบประเมิน </div>  </br>
+      <table>
+        <tr>
+          <td align="right"><div id="chart"></div></td>
+          <td align="left"><div id="chart2"></div></td>
+        </tr>
+      </table>
+         
+      
+  </section>
+  <script>
+  let sidebar = document.querySelector(".sidebar");
+  let closeBtn = document.querySelector("#btn");
+  
+  
+  closeBtn.addEventListener("click", ()=>{
+    sidebar.classList.toggle("open");
+    menuBtnChange();
+  });
+
+  
+
+  
+  function menuBtnChange() {
+   if(sidebar.classList.contains("open")){
+     closeBtn.classList.replace("bx-menu", "bx-menu-alt-right");
+   }else {
+     closeBtn.classList.replace("bx-menu-alt-right","bx-menu");
+   }
+  }
+  
+    let actName = document.querySelector("#activityName").value;
+      console.log(actName);
+    const sdk = new ChartsEmbedSDK({
+      baseUrl: 'https://charts.mongodb.com/charts-activityup-cwpcj',
+      filter:{"ActivityName": actName },
+      showAttribution: false
+    });
+
+    const chart = sdk.createChart({ chartId: '8b3bb97f-14df-4cfb-bd33-28dd6e753b35' });
+    chart.render(document.getElementById('chart'));
+
+    const chart2 = sdk.createChart({ chartId: '9dfef082-a51e-4bb6-a681-497d248d60a4' });
+    chart2.render(document.getElementById('chart2'));
+
+    function refresh(){  
+      actName = document.querySelector("#activityName").value;
+      console.log(actName);
+      chart.setFilter({"ActivityName": actName });
+      chart.refresh();
+
+      chart2.setFilter({"ActivityName": actName });
+      chart2.refresh();
+    }
+
+    function filter(){
+      
+    }
+
+  </script>
+</body>
+</html>

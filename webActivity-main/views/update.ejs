@@ -37,20 +37,20 @@
             <div class="container flex-col">
                 <div class="input flex-row">
                     <label class="labelName" for="ActivityName">ชื่อกิจกรรม</label>
-                    <input class="detail" type="text" id="ActivityName" name="ActivityName" value="<%=data.ActivityName%>">
+                    <input class="detail" type="text" id="ActivityName" name="ActivityName" value="<%=QActivity%>" required>
                 </div>
                 <input type="hidden" name="id" value="<%=data.No %>">
                 <div class="input flex-row">
                     <label class="labelName" for="place">สถานที่</label>
-                    <input class="detail" type="text" id="place" name="place" value="<%=data.place%>">
+                    <input class="detail" type="text" id="place" name="place" value="<%=Qplace%>" required>
                 </div>
                 <div class="input flex-row">
                     <label class="labelName" for="startTime">วัน/เวลาเริ่มกิจกรรม</label>
-                    <input type="datetime-local" id="startTime" name="startTime" value="<%=data.startTime%>">
+                    <input type="datetime-local" id="startTime" name="startTime" value="<%=startDate%>">
                 </div>
                 <div class="input flex-row">
                     <label class="labelName" for="endTime">วัน/เวลาสิ้นสุดกิจกรรม</label>
-                    <input type="datetime-local" id="endTime" name="endTime" value="<%=data.endTime%>">
+                    <input type="datetime-local" id="endTime" name="endTime"  value="<%=endDate%>">
                 </div>
             </div>
             <button class='button' type="submit">แก้ไขกิจกรรม</button><a class='button' href="/Dashboardadmin">ย้อนกลับ</a>

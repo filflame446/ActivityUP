@@ -1,21 +1,42 @@
 <!DOCTYPE html>
-<script> 
-  const cookieSession = require('cookie-session');
-  const bcrypt = require('bcrypt');
-  const dbConnection = require('./views/database');
-  const session = require('express-session') 
+<script>     
+
   </script>
 
 <html lang="en" dir="ltr">
   <head>
+
     <meta charset="UTF-8">
   
     <link rel="stylesheet" type="text/css" href="/stylesheets/style.css" />
    
     <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+     <style>
+      #myChart {        
+        height:400px; 
+        width:400px;
+        padding:20px;
+        margin: 20px;
+        border: 1px solid #ccc;
+      }
+      #myChart2 {        
+        height:400px; 
+        width:400px;
+        padding:20px;
+        margin: 20px;
+        border: 1px solid #ccc;
+      }
+      #divChart{        
+        width: 800px;
+      }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
    </head>
 <body>
+    
   <div class="sidebar">
     <div class="logo-details">
       <i class='bx bxl-c-plus-plus icon'></i>
@@ -35,7 +56,7 @@
          <div class="profile-details">
            <img src="/photos/Logo.png" alt="profileImg">
            <div class="name_job">
-             <div class="name"> <h5><%=user.name%></h5></div>
+             
              <div class="job">มหาวิทยาลัยพะเยา</div>
            </div>
          </div>
@@ -46,23 +67,31 @@
     </ul>
   </div>
   <section class="home-section">
-      <div class="text" >ข้อมูลสรุปผลแบบประเมิน </div>  </br></div>
-        
+      <div class="text" >ข้อมูลสรุปผลแบบประเมิน </div>  </br>
+      <div class="container">
+        <div class="flex-row100">
+          <div id="divChart" class="flex-col100"  >
+            จำนวนแบบสอบถามทั้งหมด : <%=countForm%>
+            <canvas id="myChart"></canvas></div>
+          <div id="divChart2" class="flex-col100" >
+            ผู้ชาย : <%=data2[0]%> , ผู้หญิง : <%=data2[1]%>
+            <canvas id="myChart2"></canvas></div>          
+          </div>
+        </div>
+     
+      
   </section>
   <script>
   let sidebar = document.querySelector(".sidebar");
   let closeBtn = document.querySelector("#btn");
-  let searchBtn = document.querySelector(".bx-search");
-
+  
+  
   closeBtn.addEventListener("click", ()=>{
     sidebar.classList.toggle("open");
     menuBtnChange();
   });
 
-  searchBtn.addEventListener("click", ()=>{ 
-    sidebar.classList.toggle("open");
-    menuBtnChange();
-  });
+  
 
   
   function menuBtnChange() {
@@ -72,6 +101,114 @@
      closeBtn.classList.replace("bx-menu-alt-right","bx-menu");
    }
   }
+
+  const BarColor =['rgb(255, 99, 132)','rgb(255, 55, 132)','rgb(200, 99, 132)','rgb(100, 50, 132)','rgb(150, 70, 132)','rgb(20, 30, 132)'];
+  const BarColor2 =['rgb(200, 99, 200)','rgb(100, 55, 132)','rgb(200, 99, 132)','rgb(100, 50, 132)','rgb(150, 70, 132)','rgb(20, 30, 132)'];
+    
+
+  let actName = <%-JSON.stringify(activityName) %>;
+  let label1 = <%-JSON.stringify(label1) %>;
+  let data1 = <%-JSON.stringify(data1) %>;
+  // document.getElementById("data1").value.split(",").map(x => parseFloat(x));
+
+  let label2 = <%-JSON.stringify(label2) %>;
+  let data2 = <%-JSON.stringify(data2) %>;
+  //document.getElementById("data2").value.split(",").map(x => parseInt(x));
+
+  console.log(actName); 
+  console.log(label1); 
+  console.log(data1); 
+  console.log(label2); 
+  console.log(data2); 
+
+  const dataSet1 = [
+  {    
+    label:'',
+    data: data1,
+    backgroundColor:BarColor,
+    borderColor:BarColor,
+    borderWidth: 1
+  }  
+  ];
+
+  const dataSet2 = [
+  {    
+    label:'',
+    data: data2,
+    backgroundColor:BarColor2,
+    borderColor:BarColor2,
+    borderWidth: 1
+  }  
+  ];
+
+  console.log(dataSet1);
+  console.log(dataSet2);
+  
+const dataChart1 = {
+  labels: label1,
+  datasets: dataSet1,  
+};
+
+const config1 = {
+  type: 'bar',
+  data: dataChart1,
+  options: {
+    plugins: {
+      legend:{
+        display:false
+      },
+      title: {
+          display: true,
+          text: 'คะแนนแบบการประเมิน'
+      }
+  },
+    scales: {
+      y: {
+        title: {
+          display: true,
+          text: 'คะแนนเฉลี่ย'
+        },
+        min: 0,
+        max: 5,
+        ticks: {
+          // forces step size to be 50 units
+          stepSize: 1
+        }
+      }
+    }
+}
+};
+
+const dataChart2 = {
+  labels: label2,
+  datasets: dataSet2,  
+};
+
+const config2 = {
+  type: 'pie',
+  data: dataChart2,
+  options: {
+    plugins: {
+      datalabels: {
+        display: true,        
+        font: {
+          size: 18,
+        }
+      },
+    }
+  }
+}
+
+const myChart = new Chart(
+  document.getElementById('myChart'),
+  config1
+);
+
+const myChart2 = new Chart(
+  document.getElementById('myChart2'),
+  config2
+);
+
   </script>
 </body>
 </html>
