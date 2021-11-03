@@ -28,25 +28,8 @@
         margin: 20px;
         border: 1px solid #ccc;
       }
-
-      #myChart3 {        
-        height:400px; 
-        width:400px;
-        padding:20px;
-        margin: 20px;
-        border: 1px solid #ccc;
-      }
-      #divChart{  
-        padding-left: 20px;      
-        width: 30%;
-      }
-      #divChart2{
-        padding-left: 20px;      
-        width: 30%;
-      }
-      #divChart3{        
-        padding-left: 20px;      
-        width: 30%;
+      #divChart{        
+        width: 800px;
       }
     </style>
 
@@ -73,11 +56,7 @@
          <div class="profile-details">
            <img src="/photos/Logo.png" alt="profileImg">
            <div class="name_job">
-            <div class="name">
-              <h5>
-                  <%=user.name%>
-              </h5>
-          </div>                         
+             
              <div class="job">มหาวิทยาลัยพะเยา</div>
            </div>
          </div>
@@ -91,24 +70,13 @@
       <div class="text" >ข้อมูลสรุปผลแบบประเมิน </div>  </br>
       <div class="container">
         <div class="flex-row100">
-          
-          <div id="divChart" class="flex-col100"  >            
-            จำนวนแบบสอบถาม <%=countForm%>
+          <div id="divChart" class="flex-col100"  >
+            จำนวนแบบสอบถามทั้งหมด : <%=countForm%>
             <canvas id="myChart"></canvas></div>
-
-          <div id="divChart3" class="flex-col100" >              
-            &nbsp;
-              <canvas id="myChart3"></canvas></div>
-          
-              <div id="divChart2" class="flex-col100" >    
-                ผู้ชาย : <%=data2[0]%> , ผู้หญิง : <%=data2[1]%>          
-                <canvas id="myChart2"></canvas></div>          
-              </div>
-        </div>
-
-        <div class="flex-row100">
-          
-            
+          <div id="divChart2" class="flex-col100" >
+            ผู้ชาย : <%=data2[0]%> , ผู้หญิง : <%=data2[1]%>
+            <canvas id="myChart2"></canvas></div>          
+          </div>
         </div>
      
       
@@ -178,7 +146,7 @@
   const dataSet3 = [
   {    
     label:'',
-    data: data3,
+    data: data2,
     backgroundColor:BarColor3,
     borderColor:BarColor3,
     borderWidth: 1
@@ -195,25 +163,41 @@ const dataChart1 = {
 };
 
 const config1 = {
-  type: 'pie',
+  type: 'bar',
   data: dataChart1,
   options: {
-    responsive: true,
-    maintainAspectRatio: true,
     plugins: {
-      datalabels: {
-        display: true,        
-        font: {
-          size: 18,
+      legend:{
+        display:false
+      },
+      title: {
+          display: true,
+          text: 'คะแนนแบบการประเมิน'
+      }
+  },
+    scales: {
+      x:{
+        title: {
+          display: true,
+          text: 'หัวข้อการประเมิน'
         }
       },
-      labels: {
-        render: 'percentage',        
-        precision: 2
+      y: {
+        title: {
+          display: true,
+          text: 'คะแนนเฉลี่ย'
+        },
+        
+        min: 0,
+        max: 100,
+        ticks: {
+          // forces step size to be 50 units
+          stepSize: 1
+        }
       }
     }
-  }
 }
+};
 
 const dataChart2 = {
   labels: label2,
@@ -235,32 +219,6 @@ const config2 = {
   }
 }
 
-const dataChart3 = {
-  labels: label3,
-  datasets: dataSet3,  
-};
-
-const config3 = {
-  type: 'pie',
-  data: dataChart3,
-  options: {
-    responsive: true,
-    maintainAspectRatio: true,
-    plugins: {
-      datalabels: {
-        display: true,        
-        font: {
-          size: 18,
-        }
-      },
-      labels: {
-        render: 'percentage',        
-        precision: 2
-      }
-    }
-  }
-}
-
 const myChart = new Chart(
   document.getElementById('myChart'),
   config1
@@ -269,11 +227,6 @@ const myChart = new Chart(
 const myChart2 = new Chart(
   document.getElementById('myChart2'),
   config2
-);
-
-const myChart3 = new Chart(
-  document.getElementById('myChart3'),
-  config3
 );
 
   </script>

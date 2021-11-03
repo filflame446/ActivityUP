@@ -75,6 +75,8 @@
                     <th style="text-align:center;">ชั่วโมงกิจกรรม</th>
                     <th style="text-align:center;">ได้เข้าร่วม</th>
                     <th style="text-align:center;">แบบประเมิน</th>
+                    <th style="text-align:center;">ผลการประเมิน</th>
+
 
                 </tr>
                 <% data2.forEach(function(data){%>
@@ -103,7 +105,7 @@
                     </td>
                     <td style="text-align:center;">
                         <% if(data.Joined){ %>
-                        <a href=" /assessmentform/<%=data.ActivityName %>/<%=userID%>">
+                        <a class = 'button' href=" /assessmentform/<%=data.ActivityName %>/<%=userID%>">
                             <i class="fas fa-tasks"></i>
                         </a>
                         <% }else{ %>
@@ -111,6 +113,17 @@
                         <% } %>
 
                     </td>
+                    <td style="text-align:center;">
+                        <% if(data.Joined){ %>
+                        <a class = 'button' href=" /DataassessmentByID/<%=data.ActivityName %>/<%=userID%>">
+                            <i class="fas bx bx-task"></i>
+                        </a>
+                        <% }else{ %>
+
+                        <% } %>
+
+                    </td>
+                    
 
                     </tr>
                     <% });%>

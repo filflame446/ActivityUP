@@ -62,7 +62,7 @@
     </div>
     <ul class="nav-list">
       <li>
-       <a href="/Dashboardadmin">
+       <a href="/Dashboard">
          <i class='bx bx-left-arrow-circle' ></i>
          <span class="links_name">ย้อนกลับ</span>
        </a>
@@ -72,12 +72,12 @@
      <li class="profile">
          <div class="profile-details">
            <img src="/photos/Logo.png" alt="profileImg">
-           <div class="name_job">
+           <div class="name_job"> 
             <div class="name">
-              <h5>
-                  <%=user.name%>
-              </h5>
-          </div>                         
+            <h5>
+                <%=user.name%>
+            </h5>
+        </div>            
              <div class="job">มหาวิทยาลัยพะเยา</div>
            </div>
          </div>
@@ -93,17 +93,14 @@
         <div class="flex-row100">
           
           <div id="divChart" class="flex-col100"  >            
-            จำนวนแบบสอบถาม <%=countForm%>
+            &nbsp;
             <canvas id="myChart"></canvas></div>
 
           <div id="divChart3" class="flex-col100" >              
             &nbsp;
               <canvas id="myChart3"></canvas></div>
           
-              <div id="divChart2" class="flex-col100" >    
-                ผู้ชาย : <%=data2[0]%> , ผู้หญิง : <%=data2[1]%>          
-                <canvas id="myChart2"></canvas></div>          
-              </div>
+              
         </div>
 
         <div class="flex-row100">
@@ -266,10 +263,7 @@ const myChart = new Chart(
   config1
 );
 
-const myChart2 = new Chart(
-  document.getElementById('myChart2'),
-  config2
-);
+
 
 const myChart3 = new Chart(
   document.getElementById('myChart3'),

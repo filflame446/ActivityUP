@@ -10,28 +10,36 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.min.js"></script>
-    
+    <style>
+        #username{
+            width: 250px;
+        }
+        #password{
+            width: 250px;
+        }
+    </style>
 </head>
 
 <body>
     <%- include ('layout') %>
-    <div class="container">
-        
+    <div class="container">        
     </br>
             <h2 align="center">Login </h2>
-            <div id="messages" >กรุณาทำการ Login ก่อนใช้งานระบบ</div>
+            <div id="messages" >กรุณาทำการ Login ก่อนใช้งานระบบ</div></br>
                 <form id="form-login" class="form-login" action="/users/login" method="POST">
-                    <div class="form-login">
-                        <div class="form-login">
-                            <label for="">Username</label>
-                            <input type="text" name="username" value="" class="form-control" autocomplete="off" label alt="ชื่อผู้ใช้งาน" aria-placeholder="ชื่อผู้ใช้งาน" placeholder="Username"></label>
-
-                            <div class="form-login">
+                    <div align="center">
+                        <div class="form-login" ">
+                            <label for="">Username</label></br>
+                            <input type="text" name="username" id="username" value="" class="form-control" autocomplete="off" label alt="ชื่อผู้ใช้งาน" aria-placeholder="ชื่อผู้ใช้งาน" placeholder="Username"></label>
+                        </div>  
+                        <div class="form-login" "></br>
                                 <label for="">Password</label>
-                                <input type="password" name="password" value="" class="form-control" placeholder="Password">
+                                <input type="password" name="password" id="password" value="" class="form-control" placeholder="Password">
                             </div>
+                        <div class="form-login" ">
                             <input type="button" name="Login" value="Login" class="button btn-success" onclick="CheckInput();" > <a type="button" href="/home" value="Back" class="button2 btn" >Back</a>
-
+                        </div>
+                    </div>
                 </form>
             </div>
             

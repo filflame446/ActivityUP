@@ -26,60 +26,7 @@ router.get('/', function(req, res, next) {
 //     res.render('Dashboard', { 'data': users });
 // });
 /////////////////////////////////////////////////////////////
-router.get('/Dataassessment/:activityname', async function(req, res, next) {
-    const activityName = req.params.activityname;
 
-    let label1 = ['Q1','Q2','Q3','Q4','Q5','Q6']
-    let data1 = [0,0,0,0,0,0]
-
-    let label2 = ['ชาย','หญิง']
-    let data2 = [0,0]
-
-    const client = new MongoClient(uri);
-    await client.connect();    
-    const OverAllData = await client.db('LoginDB').collection('assessmentform').find({ActivityName:activityName}).toArray();
-    await client.close();
-
-    console.log(activityName);
-    let countForm = 0;
-    if(OverAllData!=null)    {
-        console.log(OverAllData);
-        countForm = OverAllData.length;
-
-        for(i=0;i<countForm;i++){
-            for(j=0;j<data1.length;j++)
-            {
-                data1[j] += OverAllData[i]['Q'+(j+1)];
-            }
-            if(OverAllData[i]['S']==1)
-            {
-                data2[0]+=1;
-            }
-            else
-            {
-                data2[1]+=1;
-            }            
-        }
-
-        for(j=0;j<data1.length;j++)
-            {
-                if(countForm==0)
-                {
-                    data1[j] = 0;
-                }
-                else
-                {
-                    data1[j] = data1[j]/countForm;
-                }
-                
-            }
-    }
-
-    console.log(countForm);
-
-    res.render('Dataassessment', { 'activityName': activityName,'label1':label1,'data1':data1,'label2':label2,'data2':data2,'countForm':countForm });
-    
-});
 /////////////////////////////////////////////////////////////
 router.get('/Dashboard', enSureAuthencated, authRole('Student'), async function(req, res, next) {
     const client = new MongoClient(uri);
@@ -469,7 +416,7 @@ router.get("/listname", function(req, res) {
 });
 
 router.get("/assessmentsuccess/:activityName/:id", async function(req, res) {
-    const studentID = parseInt(req.params.id);
+    const studentID = req.params.id;
     const activityName = req.params.activityName;
 
     const client = new MongoClient(uri);
@@ -479,11 +426,21 @@ router.get("/assessmentsuccess/:activityName/:id", async function(req, res) {
 
     console.log(form);
 
-    res.render("assessmentsuccess", { 'studentID': studentID, 'activityName': activityName, 'data': form });
+    if(form!=null)
+    {
+        res.render("assessmentsuccess", { 'studentID': studentID, 'activityName': activityName, 'data': form });
+    }
+    else
+    {
+        console.log('redirect');
+        res.redirect("/assessmentform/"+activityName+"/"+studentID);
+        
+    }
+    
 });
 
 router.get("/assessmentform/:activityName/:id", async function(req, res) {
-    const studentID = parseInt(req.params.id);
+    const studentID = req.params.id;
     let activityName = String(req.params.activityName);
     while (activityName.includes("_")) {
         activityName = activityName.replace("_", " ");
@@ -497,6 +454,16 @@ router.get("/assessmentform/:activityName/:id", async function(req, res) {
     const form = await client.db('LoginDB').collection('assessmentform').findOne({ "ActivityName": activityName, "StudentID": studentID });
     console.log(form);
     await client.close()
+    
+    await client.connect();
+    const usersCollect = await client.db('LoginDB').collection('posts').findOne({id:studentID});
+    await client.close();
+
+    let sexID =1
+    console.log(usersCollect);
+    if(usersCollect!=null){        
+        sexID = usersCollect['sex'];
+    }
 
     formIsDone = false;
     if (form != null) {
@@ -507,13 +474,13 @@ router.get("/assessmentform/:activityName/:id", async function(req, res) {
     if (formIsDone) {
         res.redirect('/assessmentsuccess/' + activityName + '/' + studentID);
     } else {
-        res.render("assessmentform", { 'studentID': studentID, 'activityName': activityName });
+        res.render("assessmentform", { 'studentID': studentID, 'activityName': activityName,'sexID':sexID });
     }
 
 });
 
 router.post('/saveassessment/:activityName/:id', async(req, res) => {
-    const studentID = parseInt(req.params.id);
+    const studentID = req.params.id;
     const activityName = req.params.activityName;
     
     const selectsex = parseInt(req.body.es_sex);
@@ -523,6 +490,13 @@ router.post('/saveassessment/:activityName/:id', async(req, res) => {
     const select4 = parseInt(req.body.es_id4);
     const select5 = parseInt(req.body.es_id5);
     const select6 = parseInt(req.body.es_id6);
+
+    const select2_1 = parseInt(req.body.es_id_2_1);
+    const select2_2 = parseInt(req.body.es_id_2_2);
+    const select2_3 = parseInt(req.body.es_id_2_3);
+    const select2_4 = parseInt(req.body.es_id_2_4);
+    const select2_5 = parseInt(req.body.es_id_2_5);
+        
     const complain = req.body.es_complain;
 
     console.log(studentID);
@@ -533,6 +507,12 @@ router.post('/saveassessment/:activityName/:id', async(req, res) => {
     console.log(select3);
     console.log(select4);
     console.log(select5);
+    console.log(select5);
+    console.log(select2_1);
+    console.log(select2_2);
+    console.log(select2_3);
+    console.log(select2_4);
+    console.log(select2_5);
     console.log(complain);
 
     const client = new MongoClient(uri);
@@ -543,12 +523,17 @@ router.post('/saveassessment/:activityName/:id', async(req, res) => {
         StudentID: studentID,
         ActivityName: activityName,
         S: selectsex,
-        Q1: select1,
-        Q2: select2,
-        Q3: select3,
-        Q4: select4,
-        Q5: select5,
-        Q6: select6,
+        Q1_1: select1,
+        Q1_2: select2,
+        Q1_3: select3,
+        Q1_4: select4,
+        Q1_5: select5,
+        Q1_6: select6,
+        Q2_1: select2_1,
+        Q2_2: select2_2,
+        Q2_3: select2_3,
+        Q2_4: select2_4,
+        Q2_5: select2_5,
         Complain: complain
     });
     await client.close();
@@ -556,6 +541,179 @@ router.post('/saveassessment/:activityName/:id', async(req, res) => {
     res.redirect('/assessmentsuccess/' + activityName + '/' + studentID);
 
 })
+
+router.get('/Dataassessment/:activityname', async function(req, res, next) {
+    const activityName = req.params.activityname;
+
+    let label1 = ['สุนทรียภาพ','สุขภาพ','ซื่อสัตย์','มีวินัย','ใจอาสา','อื่นๆ'];
+    let data1 = [0,0,0,0,0,0];
+    let sum1 = 0;
+
+    let label2 = ['ชาย','หญิง'];
+    let data2 = [0,0];    
+
+    let label3 = ['Critical Thinking ทักษะการวิเคราะห์และแก้ปัญหา','Creativity ทักษะความคิดสร้างสรรค์','Collaboration ทักษะการทำงานร่วมกับผู้อื่น','Communication ทักษะการสื่อสาร','อื่นๆ'];
+    let data3 = [0,0,0,0,0];
+    let sum3 = 0;
+
+    const client = new MongoClient(uri);
+    await client.connect();
+    const OverAllData = await client.db('LoginDB').collection('assessmentform').find({ActivityName:activityName}).toArray();
+    await client.close();    
+
+    console.log(activityName);
+    let countForm = 0;    
+    if(OverAllData!=null)    {
+        console.log(OverAllData);
+        countForm = OverAllData.length;
+
+        for(i=0;i<countForm;i++){
+            for(j=0;j<6;j++)
+            {
+                data1[j] += OverAllData[i]['Q1_'+(j+1)];
+                sum1 += OverAllData[i]['Q1_'+(j+1)];                
+            }
+           
+            if(OverAllData[i]['S']==1)
+            {
+                data2[0]+=1;
+            }
+            else
+            {
+                data2[1]+=1;
+            }            
+
+            for(j=0;j<5;j++)
+            {
+                data3[j] += OverAllData[i]['Q2_'+(j+1)];
+                sum3 += OverAllData[i]['Q2_'+(j+1)];
+                
+            }
+        }
+
+        console.log("sum1 : "+sum1);
+        console.log("sum3 : "+sum3);
+        for(j=0;j<data1.length;j++)
+            {
+                if(countForm==0 || sum1==0)
+                {
+                    data1[j] = 0;                    
+                }
+                else
+                {
+                    data1[j] = data1[j]/sum1*100;
+                }
+                
+            }
+
+        for(j=0;j<data3.length;j++)
+            {
+                if(countForm==0|| sum3==0)
+                {
+                    data3[j] = 0;
+                }
+                else
+                {
+                    data3[j] = data3[j]/sum3*100;
+                }
+                
+            }
+    }    
+    
+    console.log("data1 : "+data1);
+    console.log("data3 : "+data3);
+    console.log("countForm : "+countForm);
+
+    res.render('Dataassessment', { 'activityName': activityName,'label1':label1,'data1':data1,'label2':label2,'data2':data2,'label3':label3,'data3':data3,'countForm':countForm});
+    
+});
+
+router.get('/DataassessmentByID/:activityname/:studentid', async function(req, res, next) {
+    const activityName = req.params.activityname;
+    const studentID = req.params.studentid;
+
+    let label1 = ['สุนทรียภาพ','สุขภาพ','ซื่อสัตย์','มีวินัย','ใจอาสา','อื่นๆ'];
+    let data1 = [0,0,0,0,0,0];
+    let sum1 = 0;
+
+    let label2 = ['ชาย','หญิง'];
+    let data2 = [0,0];    
+
+    let label3 = ['Critical Thinking ทักษะการวิเคราะห์และแก้ปัญหา','Creativity ทักษะความคิดสร้างสรรค์','Collaboration ทักษะการทำงานร่วมกับผู้อื่น','Communication ทักษะการสื่อสาร','อื่นๆ'];
+    let data3 = [0,0,0,0,0];
+    let sum3 = 0;
+
+    const client = new MongoClient(uri);
+    await client.connect();
+    const OverAllData = await client.db('LoginDB').collection('assessmentform').find({ActivityName:activityName,StudentID:studentID}).toArray();
+    await client.close();    
+
+    console.log(activityName);
+    let countForm = 0;    
+    if(OverAllData!=null)    {
+        console.log(OverAllData);
+        countForm = OverAllData.length;
+
+        for(i=0;i<countForm;i++){
+            for(j=0;j<6;j++)
+            {
+                data1[j] += OverAllData[i]['Q1_'+(j+1)];
+                sum1 += OverAllData[i]['Q1_'+(j+1)];                
+            }
+           
+            if(OverAllData[i]['S']==1)
+            {
+                data2[0]+=1;
+            }
+            else
+            {
+                data2[1]+=1;
+            }            
+
+            for(j=0;j<5;j++)
+            {
+                data3[j] += OverAllData[i]['Q2_'+(j+1)];
+                sum3 += OverAllData[i]['Q2_'+(j+1)];
+                
+            }
+        }
+
+        console.log("sum1 : "+sum1);
+        console.log("sum3 : "+sum3);
+        for(j=0;j<data1.length;j++)
+            {
+                if(countForm==0 || sum1==0)
+                {
+                    data1[j] = 0;                    
+                }
+                else
+                {
+                    data1[j] = data1[j]/sum1*100;
+                }
+                
+            }
+
+        for(j=0;j<data3.length;j++)
+            {
+                if(countForm==0|| sum3==0)
+                {
+                    data3[j] = 0;
+                }
+                else
+                {
+                    data3[j] = data3[j]/sum3*100;
+                }
+                
+            }
+    }    
+    
+    console.log("data1 : "+data1);
+    console.log("data3 : "+data3);
+    console.log("countForm : "+countForm);
+
+    res.render('DataassessmentByID', { 'activityName': activityName,'label1':label1,'data1':data1,'label2':label2,'data2':data2,'label3':label3,'data3':data3,'countForm':countForm});
+    
+});
 
 function enSureAuthencated(req, res, next) {
     if (req.isAuthenticated()) {

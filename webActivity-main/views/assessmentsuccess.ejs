@@ -74,14 +74,7 @@
                 <div class="col-md-3">
                     กิจกรรม :
                     <%=activityName%>
-                        <br> เพศ :
-                            <%if(data['S']==1){%>                               
-                               <input type="radio" name="es_sex" value="1" disabled checked /> ชาย 
-                                <input type="radio" name="es_sex" value="2" disabled /> หญิง 
-                             <%}else{%>
-                                <input type="radio" name="es_sex" value="1" disabled /> ชาย 
-                                <input type="radio" name="es_sex" value="2" disabled checked /> หญิง 
-                                     <%}%>                                         
+                                                       
                 </div>
                 
                 <div class="col-md-9"> <br />
@@ -90,21 +83,19 @@
                             <tr>
                                 <td width="75%" rowspan="2" align="center">
                                     <br>
-                                    <strong>หัวข้อการประเมิน</strong>
+                                    <strong>อัตลักษณ์ของบัณฑิตมหาวิทยาลัยพะเยา</strong>
                                 </td>
-                                <td colspan="5" align="center"><strong>ระดับความพึงพอใจ</strong></td>
+                                <td colspan="11" style="text-align: center;"><strong>สิ่งที่ท่านได้รับจากการเข้าร่วมกิจกรรม</strong></td>
                             </tr>
                             <tr>
-                                <td width="5%" align="center"><strong>5</strong></td>
-                                <td width="5%" align="center"><strong>4</strong></td>
-                                <td width="5%" align="center"><strong>3</strong></td>
-                                <td width="5%" align="center"><strong>2</strong></td>
-                                <td width="5%" align="center"><strong>1</strong></td>
+                                <%for(i=0;i<=10;i++){%>
+                                    <td align="center"><strong><%=i%></strong></td>
+                                <%}%>                               
                             </tr>
                             <tr>
-                                <td height="30">&nbsp; 1.กิจกรรมในครั้งนี้มีประโยชรน์ต่อท่าน</td>
-                                <%for (let i = 5; i >= 1; i--){%>
-                                    <%if(data['Q1']==i){%>
+                                <td height="30">&nbsp; 1.สุนทรียภาพ</td>
+                                <%for (let i = 0; i <= 10; i++){%>
+                                    <%if(data['Q1_1']==i){%>
                                         <td height="30" align="center"><input type="radio" name="es_id1" value="<%=i%>" checked disabled /></td>
                                         <%}else{%>
                                             <td height="30" align="center"><input type="radio" name="es_id1" value="<%=i%>" disabled /></td>
@@ -113,9 +104,9 @@
                                                 <%}%>
                             </tr>
                             <tr>
-                                <td height="30">&nbsp; 2.การกิจกรรมจัดในเวลาที่เหมาะสม</td>
-                                <%for (let i = 5; i >= 1; i--){%>
-                                    <%if(data['Q2']==i){%>
+                                <td height="30">&nbsp; 2.สุขภาพ</td>
+                                <%for (let i = 0; i <= 10; i++){%>
+                                    <%if(data['Q1_2']==i){%>
                                         <td height="30" align="center"><input type="radio" name="es_id2" value="<%=i%>" checked disabled /></td>
                                         <%}else{%>
                                             <td height="30" align="center"><input type="radio" name="es_id2" value="<%=i%>" disabled /></td>
@@ -124,47 +115,113 @@
                                                 <%}%>
                             </tr>
                             <tr>
-                                <td height="30">&nbsp; 3.กิจกรรมจัดในสถานที่เหมาะสม</td>
-                                <%for (let i = 5; i >= 1; i--){%>
-                                    <%if(data['Q3']==i){%>
+                                <td height="30">&nbsp; 3.ซื่อสัตย์</td>
+                                <%for (let i = 0; i <= 10; i++){%>
+                                    <%if(data['Q1_3']==i){%>
                                         <td height="30" align="center"><input type="radio" name="es_id3" value="<%=i%>" checked disabled /></td>
                                         <%}else{%>
                                             <td height="30" align="center"><input type="radio" name="es_id3" value="<%=i%>" disabled /></td>
                                             <%}%>
-
                                                 <%}%>
                             </tr>
                             <tr>
-                                <td height="30">&nbsp; 4.กิจกรรมนี้สามารถนำไปใช้ในชีวิตประจำวันได้</td>
-                                <%for (let i = 5; i >= 1; i--){%>
-                                    <%if(data['Q4']==i){%>
+                                <td height="30">&nbsp; 4.มีวินัย</td>
+                                <%for (let i = 0; i <= 10; i++){%>
+                                    <%if(data['Q1_4']==i){%>
                                         <td height="30" align="center"><input type="radio" name="es_id4" value="<%=i%>" checked disabled /></td>
                                         <%}else{%>
                                             <td height="30" align="center"><input type="radio" name="es_id4" value="<%=i%>" disabled /></td>
                                             <%}%>
-
                                                 <%}%>
                             </tr>
                             <tr>
-                                <td height="30">&nbsp; 5.กิจกรรมมีความน่าสนใจ</td>
-                                <%for (let i = 5; i >= 1; i--){%>
-                                    <%if(data['Q5']==i){%>
+                                <td height="30">&nbsp; 5.ใจอาสา</td>
+                                <%for (let i = 0; i <= 10; i++){%>
+                                    <%if(data['Q1_5']==i){%>
                                         <td height="30" align="center"><input type="radio" name="es_id5" value="<%=i%>" checked disabled /></td>
                                         <%}else{%>
                                             <td height="30" align="center"><input type="radio" name="es_id5" value="<%=i%>" disabled /></td>
                                             <%}%>
-
                                                 <%}%>
                             </tr>
                             <tr>
-                                <td height="30">&nbsp; 6.ท่านได้รับความรู้จากการเข้าร่วมกิจกรรม</td>
-                                <%for (let i = 5; i >= 1; i--){%>
-                                    <%if(data['Q6']==i){%>
+                                <td height="30">&nbsp; 6.อื่นๆ</td>
+                                <%for (let i = 0; i <= 10; i++){%>
+                                    <%if(data['Q1_6']==i){%>
                                         <td height="30" align="center"><input type="radio" name="es_id6" value="<%=i%>" checked disabled /></td>
                                         <%}else{%>
                                             <td height="30" align="center"><input type="radio" name="es_id6" value="<%=i%>" disabled /></td>
                                             <%}%>
+                                                <%}%>
+                            </tr>
 
+                        </table>
+
+                        <br>
+
+                        <table width="70%" border="1" align="center" cellpadding="0" cellspacing="0" class="table table-bordered table-hover">
+                            <tr>
+                                <td width="75%" rowspan="2" align="center">
+                                    <br>
+                                    <strong>สมรรถนะการเรียนรู้</strong>
+                                </td>
+                                <td colspan="11" style="text-align: center;"><strong>สิ่งที่ท่านได้รับจากการเข้าร่วมกิจกรรม</strong></td>
+                            </tr>
+                            <tr>
+                                <%for(i=0;i<=10;i++){%>
+                                    <td align="center"><strong><%=i%></strong></td>
+                                <%}%>                               
+                            </tr>
+                            <tr>
+                                <td height="30">&nbsp; 1.Critical Thinking ทักษะการวิเคราะห์และแก้ปัญหา</td>
+                                <%for (let i = 0; i <= 10; i++){%>
+                                    <%if(data['Q2_1']==i){%>
+                                        <td height="30" align="center"><input type="radio" name="es_id_2_1" value="<%=i%>" checked disabled /></td>
+                                        <%}else{%>
+                                            <td height="30" align="center"><input type="radio" name="es_id_2_1" value="<%=i%>" disabled /></td>
+                                            <%}%>
+
+                                                <%}%>
+                            </tr>
+                            <tr>
+                                <td height="30">&nbsp; 2.Creativity ทักษะความคิดสร้างสรรค์</td>
+                                <%for (let i = 0; i <= 10; i++){%>
+                                    <%if(data['Q2_2']==i){%>
+                                        <td height="30" align="center"><input type="radio" name="es_id_2_2" value="<%=i%>" checked disabled /></td>
+                                        <%}else{%>
+                                            <td height="30" align="center"><input type="radio" name="es_id_2_2" value="<%=i%>" disabled /></td>
+                                            <%}%>
+
+                                                <%}%>
+                            </tr>
+                            <tr>
+                                <td height="30">&nbsp; 3.Collaboration ทักษะการทำงานร่วมกับผู้อื่น</td>
+                                <%for (let i = 0; i <= 10; i++){%>
+                                    <%if(data['Q2_3']==i){%>
+                                        <td height="30" align="center"><input type="radio" name="es_id_2_3" value="<%=i%>" checked disabled /></td>
+                                        <%}else{%>
+                                            <td height="30" align="center"><input type="radio" name="es_id_2_3" value="<%=i%>" disabled /></td>
+                                            <%}%>
+                                                <%}%>
+                            </tr>
+                            <tr>
+                                <td height="30">&nbsp; 4.Communication ทักษะการสื่อสาร</td>
+                                <%for (let i = 0; i <= 10; i++){%>
+                                    <%if(data['Q2_4']==i){%>
+                                        <td height="30" align="center"><input type="radio" name="es_id_2_4" value="<%=i%>" checked disabled /></td>
+                                        <%}else{%>
+                                            <td height="30" align="center"><input type="radio" name="es_id_2_4" value="<%=i%>" disabled /></td>
+                                            <%}%>
+                                                <%}%>
+                            </tr>
+                            <tr>
+                                <td height="30">&nbsp; 5.อื่น ๆ</td>
+                                <%for (let i = 0; i <= 10; i++){%>
+                                    <%if(data['Q2_5']==i){%>
+                                        <td height="30" align="center"><input type="radio" name="es_id_2_5" value="<%=i%>" checked disabled /></td>
+                                        <%}else{%>
+                                            <td height="30" align="center"><input type="radio" name="es_id_2_5" value="<%=i%>" disabled /></td>
+                                            <%}%>
                                                 <%}%>
                             </tr>
 
@@ -179,7 +236,7 @@
                     <textarea name="es_complain" cols="80" rows="3" id="es_complain" class="form-control" disabled>
                         <%=data['Complain']%>
                                         </textarea>
-                    <br/>
+                    <br />
 
 
 

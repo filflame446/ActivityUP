@@ -65,7 +65,8 @@
         </ul>
     </div>
     <section class="home-section" style="padding-left:20px;padding-right: 20px;">
-        <form id="formqsys" name="formqsys" method="post" action="/saveassessment/<%=activityName%>/<%=studentID%>">
+        <form id="formqsys" name="formqsys" method="post" action="/saveassessment/<%=activityName%>/<%=studentID%>">                        
+        <input type="hidden" name="es_sex" value="<%=sexID%>" />
         <div class="text">ประเมินความพึงพอใจต่อการเข้าร่วมกิจกรรม </div>
         <div class="container">
             <div class="row">
@@ -74,81 +75,123 @@
                     กิจกรรม :
                     <%=activityName%>
                         <br>
-                    เพศ : 
-                          <input type="radio" name="es_sex" value="1" required /> ชาย 
-                          <input type="radio" name="es_sex" value="2" /> หญิง 
+                    
                 </div>
                 <div class="col-md-3">
                     
                         <br>
                 </div>
                 
-                <div class="col-md-9"> <br />
-                    
+                <div class="col-md-9"> <br />                    
                         <table width="70%" border="1" align="center" cellpadding="0" cellspacing="0" class="table table-bordered table-hover">
                             <tr>
-                                <td width="75%" rowspan="2" align="center">
+                                <td width="75%" rowspan="2" style="text-align: center;">
                                     <br>
-                                    <strong>หัวข้อการประเมิน</strong>
+                                    <strong>อัตลักษณ์ของบัณฑิตมหาวิทยาลัยพะเยา</strong>
                                 </td>
-                                <td colspan="5" align="center"><strong>ระดับความพึงพอใจ</strong></td>
+                                <td colspan="11" style="text-align: center;"><strong>สิ่งที่ท่านได้รับจากการเข้าร่วมกิจกรรม</strong></td>
                             </tr>
                             <tr>
-                                <td width="5%" align="center"><strong>5</strong></td>
-                                <td width="5%" align="center"><strong>4</strong></td>
-                                <td width="5%" align="center"><strong>3</strong></td>
-                                <td width="5%" align="center"><strong>2</strong></td>
-                                <td width="5%" align="center"><strong>1</strong></td>
+                                <%for(i=0;i<=10;i++){%>
+                                    <td align="center"><strong><%=i%></strong></td>
+                                <%}%>                               
                             </tr>
                             <tr>
-                                <td height="30">&nbsp; 1.กิจกรรมในครั้งนี้มีประโยชรน์ต่อท่าน</td>
-                                <td height="30" align="center"><input type="radio" name="es_id1" value="5" required /></td>
-                                <td height="30" align="center"><input type="radio" name="es_id1" value="4" /></td>
-                                <td height="30" align="center"><input type="radio" name="es_id1" value="3" /></td>
-                                <td height="30" align="center"><input type="radio" name="es_id1" value="2" /></td>
-                                <td height="30" align="center"><input type="radio" name="es_id1" value="1" /></td>
+                                <td height="30">&nbsp; 1.สุนทรียภาพ</td>
+                                <td height="30" align="center"><input type="radio" name="es_id1" value="0" required /></td>
+                                <%for(i=1;i<=10;i++){%>
+                                        <td height="30" align="center"><input type="radio" name="es_id1" value="<%=i%>" /></td>
+                                    <%}%>
                             </tr>
                             <tr>
-                                <td height="30">&nbsp; 2.การกิจกรรมจัดในเวลาที่เหมาะสม</td>
-                                <td width="5%" height="30" align="center"><input type="radio" name="es_id2" value="5" required /></td>
-                                <td width="5%" height="30" align="center"><input type="radio" name="es_id2" value="4" /></td>
-                                <td width="5%" height="30" align="center"><input type="radio" name="es_id2" value="3" /></td>
-                                <td width="5%" height="30" align="center"><input type="radio" name="es_id2" value="2" /></td>
-                                <td width="5%" height="30" align="center"><input type="radio" name="es_id2" value="1" /></td>
+                                <td height="30">&nbsp; 2.สุขภาพ</td>
+                                <td  height="30" align="center"><input type="radio" name="es_id2" value="0" required /></td>
+                                <%for(i=1;i<=10;i++){%>
+                                    <td height="30" align="center"><input type="radio" name="es_id2" value="<%=i%>" /></td>
+                                <%}%>
                             </tr>
                             <tr>
-                                <td height="30">&nbsp; 3.กิจกรรมจัดในสถานที่เหมาะสม</td>
-                                <td width="5%" height="30" align="center"><input type="radio" name="es_id3" value="5" required /></td>
-                                <td width="5%" height="30" align="center"><input type="radio" name="es_id3" value="4" /></td>
-                                <td width="5%" height="30" align="center"><input type="radio" name="es_id3" value="3" /></td>
-                                <td width="5%" height="30" align="center"><input type="radio" name="es_id3" value="2" /></td>
-                                <td width="5%" height="30" align="center"><input type="radio" name="es_id3" value="1" /></td>
+                                <td height="30">&nbsp; 3.ซื่อสัตย์</td>
+                                <td  height="30" align="center"><input type="radio" name="es_id3" value="0" required /></td>
+                                <%for(i=1;i<=10;i++){%>
+                                    <td height="30" align="center"><input type="radio" name="es_id3" value="<%=i%>" /></td>
+                                <%}%>
                             </tr>
                             <tr>
-                                <td height="30">&nbsp; 4.กิจกรรมนี้สามารถนำไปใช้ในชีวิตประจำวันได้</td>
-                                <td width="5%" height="30" align="center"><input type="radio" name="es_id4" value="5" required /></td>
-                                <td width="5%" height="30" align="center"><input type="radio" name="es_id4" value="4" /></td>
-                                <td width="5%" height="30" align="center"><input type="radio" name="es_id4" value="3" /></td>
-                                <td width="5%" height="30" align="center"><input type="radio" name="es_id4" value="2" /></td>
-                                <td width="5%" height="30" align="center"><input type="radio" name="es_id4" value="1" /></td>
+                                <td height="30">&nbsp; 4.มีวินัย</td>
+                                <td  height="30" align="center"><input type="radio" name="es_id4" value="0" required /></td>
+                                <%for(i=1;i<=10;i++){%>
+                                    <td height="30" align="center"><input type="radio" name="es_id4" value="<%=i%>" /></td>
+                                <%}%>
                             </tr>
                             <tr>
-                                <td height="30">&nbsp; 5.กิจกรรมมีความน่าสนใจ</td>
-                                <td height="30" align="center"><input type="radio" name="es_id5" value="5" required /></td>
-                                <td height="30" align="center"><input type="radio" name="es_id5" value="4" /></td>
-                                <td height="30" align="center"><input type="radio" name="es_id5" value="3" /></td>
-                                <td height="30" align="center"><input type="radio" name="es_id5" value="2" /></td>
-                                <td height="30" align="center"><input type="radio" name="es_id5" value="1" /></td>
+                                <td height="30">&nbsp; 5.ใจอาสา</td>
+                                <td height="30" align="center"><input type="radio" name="es_id5" value="0" required /></td>
+                                <%for(i=1;i<=10;i++){%>
+                                    <td height="30" align="center"><input type="radio" name="es_id5" value="<%=i%>" /></td>
+                                <%}%>
                             </tr>
                             <tr>
-                                <td height="30">&nbsp; 6.ท่านได้รับความรู้จากการเข้าร่วมกิจกรรม</td>
-                                <td height="30" align="center"><input type="radio" name="es_id6" value="5" required /></td>
-                                <td height="30" align="center"><input type="radio" name="es_id6" value="4" /></td>
-                                <td height="30" align="center"><input type="radio" name="es_id6" value="3" /></td>
-                                <td height="30" align="center"><input type="radio" name="es_id6" value="2" /></td>
-                                <td height="30" align="center"><input type="radio" name="es_id6" value="1" /></td>
+                                <td height="30">&nbsp; 6.อื่นๆ</td>
+                                <td height="30" align="center"><input type="radio" name="es_id6" value="0" required /></td>
+                                <%for(i=1;i<=10;i++){%>
+                                    <td height="30" align="center"><input type="radio" name="es_id6" value="<%=i%>" /></td>
+                                <%}%>
                             </tr>
 
+                        </table>
+                        
+                        <br>
+
+                        <table width="70%" border="1" align="center" cellpadding="0" cellspacing="0" class="table table-bordered table-hover">
+                            <tr>
+                                <td width="75%" rowspan="2" style="text-align: center;">
+                                    <br>
+                                    <strong>สมรรถนะการเรียนรู้</strong>
+                                </td>
+                                <td colspan="11" style="text-align: center;"><strong>สิ่งที่ท่านได้รับจากการเข้าร่วมกิจกรรม</strong></td>
+                            </tr>
+                            <tr>
+                                <%for(i=0;i<=10;i++){%>
+                                    <td align="center"><strong><%=i%></strong></td>
+                                <%}%>                               
+                            </tr>
+                            <tr>
+                                <td height="30">&nbsp; 1.Critical Thinking ทักษะการวิเคราะห์และแก้ปัญหา</td>
+                                <td height="30" align="center"><input type="radio" name="es_id_2_1" value="0" required /></td>
+                                <%for(i=1;i<=10;i++){%>
+                                        <td height="30" align="center"><input type="radio" name="es_id_2_1" value="<%=i%>" /></td>
+                                    <%}%>
+                            </tr>
+                            <tr>
+                                <td height="30">&nbsp; 2.Creativity ทักษะความคิดสร้างสรรค์</td>
+                                <td  height="30" align="center"><input type="radio" name="es_id_2_2" value="0" required /></td>
+                                <%for(i=1;i<=10;i++){%>
+                                    <td height="30" align="center"><input type="radio" name="es_id_2_2" value="<%=i%>" /></td>
+                                <%}%>
+                            </tr>
+                            <tr>
+                                <td height="30">&nbsp; 3.Collaboration ทักษะการทำงานร่วมกับผู้อื่น</td>
+                                <td  height="30" align="center"><input type="radio" name="es_id_2_3" value="0" required /></td>
+                                <%for(i=1;i<=10;i++){%>
+                                    <td height="30" align="center"><input type="radio" name="es_id_2_3" value="<%=i%>" /></td>
+                                <%}%>
+                            </tr>
+                            <tr>
+                                <td height="30">&nbsp; 4.Communication ทักษะการสื่อสาร</td>
+                                <td  height="30" align="center"><input type="radio" name="es_id_2_4" value="0" required /></td>
+                                <%for(i=1;i<=10;i++){%>
+                                    <td height="30" align="center"><input type="radio" name="es_id_2_4" value="<%=i%>" /></td>
+                                <%}%>
+                            </tr>
+                            <tr>
+                                <td height="30">&nbsp; 5.อื่น ๆ</td>
+                                <td height="30" align="center"><input type="radio" name="es_id_2_5" value="0" required /></td>
+                                <%for(i=1;i<=10;i++){%>
+                                    <td height="30" align="center"><input type="radio" name="es_id_2_5" value="<%=i%>" /></td>
+                                <%}%>
+                            </tr>
+                            
                         </table>
                 </div>
             </div>
