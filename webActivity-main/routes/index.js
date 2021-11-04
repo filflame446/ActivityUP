@@ -89,7 +89,7 @@ function pad(num, size) {
     return num;
 }
 
-router.get('/insert', async function(req, res, next) {
+router.get('/insert',authRole('admin'), async function(req, res, next) {
     let startDate = new Date();
     let endDate = new Date();
     //2018-06-12T19:30
@@ -106,7 +106,7 @@ router.get('/insert', async function(req, res, next) {
 
 });
 
-router.post('/insert', async function(req, res, next) {
+router.post('/insert', authRole('admin') ,async function(req, res, next) {
     const client = new MongoClient(uri);
     const diffTime = new Date(req.body.endTime).getTime() - new Date(req.body.startTime).getTime();
     const dateNow = new Date();
@@ -187,7 +187,7 @@ router.post('/insert', async function(req, res, next) {
 
 
 //////////////////////Get////////////////////////////////
-router.get('/update/:id', async function(req, res, next) {
+router.get('/update/:id',authRole('admin'), async function(req, res, next) {
     const id = parseInt(req.params.id);
     const client = new MongoClient(uri);
     await client.connect();
@@ -219,7 +219,7 @@ router.get('/update/:id', async function(req, res, next) {
 });
 
 ////////////////////update/////////////////////////////
-router.post('/update/:id', async(req, res) => {
+router.post('/update/:id',authRole('admin'), async(req, res) => {
 
         const id = parseInt(req.params.id);
         const client = new MongoClient(uri);
@@ -245,7 +245,7 @@ router.post('/update/:id', async(req, res) => {
         res.redirect('/Dashboardadmin');
     })
     ///////////////////Delete////////////////////////////
-router.post('/delete/:id', async(req, res) => {
+router.post('/delete/:id',authRole('admin'), async(req, res) => {
         const id = parseInt(req.params.id);
         const client = new MongoClient(uri);
 
@@ -256,7 +256,7 @@ router.post('/delete/:id', async(req, res) => {
     })
     ////////////////////////////////////////////////////
 
-router.get('/listweing/:activityname', async(req, res, next) => {
+router.get('/listweing/:activityname',authRole('admin'), async(req, res, next) => {
     const activityName = req.params.activityname;
     const client = new MongoClient(uri);
     await client.connect();
@@ -310,7 +310,7 @@ router.get('/listweing/:activityname', async(req, res, next) => {
     res.render('listweing', { 'data': datas });
 });
 
-router.get('/listname/:weingname/:activityname', async(req, res, next) => {
+router.get('/listname/:weingname/:activityname',authRole('admin'), async(req, res, next) => {
     let weingName = req.params.weingname;
     const activityName = req.params.activityname;
     const client = new MongoClient(uri);
@@ -542,7 +542,7 @@ router.post('/saveassessment/:activityName/:id', async(req, res) => {
 
 })
 
-router.get('/Dataassessment/:activityname', async function(req, res, next) {
+router.get('/Dataassessment/:activityname',authRole('admin'), async function(req, res, next) {
     const activityName = req.params.activityname;
 
     let label1 = ['สุนทรียภาพ','สุขภาพ','ซื่อสัตย์','มีวินัย','ใจอาสา','อื่นๆ'];
@@ -628,7 +628,7 @@ router.get('/Dataassessment/:activityname', async function(req, res, next) {
     
 });
 
-router.get('/DataassessmentByID/:activityname/:studentid', async function(req, res, next) {
+router.get('/DataassessmentByID/:activityname/:studentid',authRole('Student'), async function(req, res, next) {
     const activityName = req.params.activityname;
     const studentID = req.params.studentid;
 
