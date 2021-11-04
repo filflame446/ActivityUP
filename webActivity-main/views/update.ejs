@@ -32,8 +32,9 @@
 <body>
     <section class="grid-item update">
         <h3>แก้ไขกิจกรรม</h3>
-
+        <input type="hidden" id="messagealert" value="<%=alarmMessage%>">   
         <form action="/update/<%=data.No%>" method="post">
+                 
             <div class="container flex-col">
                 <div class="input flex-row">
                     <label class="labelName" for="ActivityName">ชื่อกิจกรรม</label>
@@ -57,6 +58,14 @@
         </form>
 
     </section>
+    <script>
+        if(document.getElementById("messagealert").value!="")
+        {
+            alert(document.getElementById("messagealert").value);
+            document.getElementById("messagealert").value="";
+        }
+    </script>
 </body> 
+
 
 </html>

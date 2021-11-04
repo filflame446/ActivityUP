@@ -1,7 +1,10 @@
 <!DOCTYPE html>
-<script>     
-
-  </script>
+<script>
+  const cookieSession = require('cookie-session');
+  const bcrypt = require('bcrypt');
+  const dbConnection = require('./views/database');
+  const session = require('express-session')
+</script>
 
 <html lang="en" dir="ltr">
   <head>
@@ -128,9 +131,10 @@
    }
   }
 
-  const BarColor =['rgb(255, 99, 132)','rgb(255, 55, 132)','rgb(200, 99, 132)','rgb(100, 50, 132)','rgb(150, 70, 132)','rgb(20, 30, 132)'];
-  const BarColor2 =['rgb(200, 99, 200)','rgb(100, 55, 132)','rgb(200, 99, 132)','rgb(100, 50, 132)','rgb(150, 70, 132)','rgb(20, 30, 132)'];
-  const BarColor3 =['rgb(200, 99, 200)','rgb(100, 55, 132)','rgb(200, 99, 132)','rgb(100, 50, 132)','rgb(150, 70, 132)','rgb(20, 30, 132)'];
+  const BarColor =['rgb(255, 120, 120)','rgb(224, 192, 151)','rgb(243, 240, 215)','rgb(206, 229, 208)','rgb(255, 191, 134)','rgb(254, 210, 170)'];
+  const BarColor2 =['rgb(137, 181, 175)','rgb(150, 199, 193)','rgb(222, 217, 196)','rgb(208, 202, 178)','rgb(246, 215, 167)','rgb(246, 234, 190)'];
+  const BarColor3 =['rgb(226, 106, 44)','rgb(255, 130, 67)','rgb(253, 166, 93)','rgb(255, 208, 127)','rgb(229, 137, 10)','rgb(157, 92, 13)'];
+  
     
   let actName = <%-JSON.stringify(activityName) %>;
   let label1 = <%-JSON.stringify(label1) %>;

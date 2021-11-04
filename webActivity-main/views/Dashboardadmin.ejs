@@ -41,13 +41,13 @@
                 </a>
                 <span class="tooltip">หน้าหลัก</span>
             </li>
-            <!-- <li>
+            <li>
                 <a href="/Dataassessment/<%=data.ActivityName%>">
                     <i class='bx bx-task'></i>
                     <span class="links_name">ดูสรุปผลแบบประเมิน</span>
                 </a>
                 <span class="tooltip">ดูสรุปผลแบบประเมิน</span>
-            </li> -->
+            </li>
             <li>
                 <li class="profile">
                     <div class="profile-details">
@@ -74,6 +74,7 @@
         <a class="button " href="/insert">สร้างกิจกรรม</a>
         <table >
             <tr>
+                <th>ปี</th>
                 <th>รายชื่อกิจกรรม</th>
                 <th>วันที่/เวลา</th>
                 <th>สถานที่</th>
@@ -86,6 +87,9 @@
             </tr>
             <tr>
                 <% data.forEach(function(data){%>
+                    <td >
+                        <%=(new Date(data.startTime)).getFullYear()%>
+                    </td>
                     <td >
                         <%=data.ActivityName %>
                     </td>
@@ -110,7 +114,7 @@
                         <a class='button' href=" /update/<%=data.No%>">แก้ไขกิจกรรม</a>
                     </td>
                     <td>
-                        <a class='button' href=" /Dataassessment/<%=data.ActivityName%>"><i class="fas fa-tasks"></i></a>
+                        <a class='button' href=" /Dataassessment/<%=data.ActivityName%>/<%=(new Date(data.startTime)).getFullYear()%>"><i class="fas fa-tasks"></i></a>
                     </td>
                     <td>
                         <form method="post" action="/delete/<%= data.No %>">

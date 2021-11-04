@@ -106,28 +106,43 @@ router.get('/insert',authRole('admin'), async function(req, res, next) {
 
 });
 
-router.post('/insert', authRole('admin') ,async function(req, res, next) {
+router.post('/insert',authRole('admin'), async function(req, res, next) {
     const client = new MongoClient(uri);
     const diffTime = new Date(req.body.endTime).getTime() - new Date(req.body.startTime).getTime();
     const dateNow = new Date();
     const actName = req.body.ActivityName;
 
-    console.log('Check Dup' + actName);
+    let startDate = new Date(req.body.startTime);
+    let endDate =new Date(req.body.endTime);
+
+    console.log('Check Dup' + actName+' , '+startDate.getFullYear()) ;
 
     await client.connect();
-    const chkData = await client.db('LoginDB').collection('data').findOne({ ActivityName: actName });
+    const chkData = await client.db('LoginDB').collection('data').aggregate([
+        { 
+          $match: {
+            $expr: 	{  
+          $and:[
+                {$eq: [{ $year: '$startTime' },  startDate.getFullYear() ]},
+                {$eq: ['$ActivityName',  actName ]}
+               ]
+              }
+               
+          }
+        }
+      ]).toArray();
+    
+    console.log(chkData);
+
     await client.close();
 
     let isDuplicateActivity = false;
-
-    let startDate = new Date(req.body.startTime);
-    let endDate =new Date(req.body.endTime);
         
     let startDateStr = startDate.getFullYear() + "-" + pad(startDate.getMonth() + 1, 2) + "-" + pad(startDate.getDate(), 2) + "T" + pad(startDate.getHours(), 2) + ":" + pad(startDate.getMinutes(), 2);
     let endDateStr = endDate.getFullYear() + "-" + pad(endDate.getMonth() + 1, 2) + "-" + pad(endDate.getDate(), 2) + "T" + pad(endDate.getHours(), 2) + ":" + pad(endDate.getMinutes(), 2);
 
     console.log(chkData);
-    if (chkData != null) {
+    if (chkData.length!=0) {
         console.log("Check data not null");
         isDuplicateActivity = true;
     }
@@ -140,10 +155,15 @@ router.post('/insert', authRole('admin') ,async function(req, res, next) {
     scores = (Math.floor(diffTime / 3600000) > 8.0) ? 8 : (Math.floor(diffTime / 3600000));    
     console.log("Score : " + scores);
 
-    if (scores <= 0) {
+    if (scores < 0) {
         res.render("insert", { 'startDate': startDateStr, 'endDate': endDateStr, 'alarmMessage': 'กรุณากำหนดเวลากิจกรรมให้ถูกต้อง เวลาสิ้นสุดกิจกรรมต้องมากกว่าเวลาเริ่มกิจกรรม', 'Qplace': req.body.place, 'QActivity': req.body.ActivityName });
         return;
     }
+
+    if(scores==0)
+    {
+        scores =1;
+    }    
 
     await client.connect();
     const chkTime = await client.db('LoginDB').collection('data').findOne(
@@ -213,9 +233,8 @@ router.get('/update/:id',authRole('admin'), async function(req, res, next) {
 
     }
 
-
     console.log(users);
-    res.render('update', { 'data': users,'startDate': startDateStr, 'endDate': endDateStr,'Qplace': Qplace, 'QActivity': QActivity })
+    res.render('update', { 'data': users,'startDate': startDateStr, 'endDate': endDateStr,'alarmMessage': '','Qplace': Qplace, 'QActivity': QActivity })
 });
 
 ////////////////////update/////////////////////////////
@@ -224,14 +243,84 @@ router.post('/update/:id',authRole('admin'), async(req, res) => {
         const id = parseInt(req.params.id);
         const client = new MongoClient(uri);
         const diffTime = new Date(req.body.endTime).getTime() - new Date(req.body.startTime).getTime();
+        const actName = req.body.ActivityName;
 
         let startDate = new Date(req.body.startTime);
         let endDate =new Date(req.body.endTime);
 
-        scores = (Math.floor(diffTime / 3600000) > 8.0) ? 8 : (Math.floor(diffTime / 3600000));
-        console.log("Score : " + scores);
-        if (diffTime < 0) return res.redirect('/update/<%=data.No%>');
         await client.connect();
+        const users = await client.db('LoginDB').collection('data').findOne({ "No": id });
+      
+        const chkData = await client.db('LoginDB').collection('data').aggregate([
+            { 
+              $match: {
+                $expr: 	{  
+              $and:[
+                    {$eq: [{ $year: '$startTime' },  startDate.getFullYear() ]},
+                    {$eq: ['$ActivityName',  actName ]},
+                    {$ne: ['$No',  id ]},
+                   ]
+                  }
+                   
+              }
+            }
+          ]).toArray();
+        
+        console.log(chkData);
+            
+        let isDuplicateActivity = false;
+            
+        let startDateStr = startDate.getFullYear() + "-" + pad(startDate.getMonth() + 1, 2) + "-" + pad(startDate.getDate(), 2) + "T" + pad(startDate.getHours(), 2) + ":" + pad(startDate.getMinutes(), 2);
+        let endDateStr = endDate.getFullYear() + "-" + pad(endDate.getMonth() + 1, 2) + "-" + pad(endDate.getDate(), 2) + "T" + pad(endDate.getHours(), 2) + ":" + pad(endDate.getMinutes(), 2);
+        
+        if (chkData.length!=0) {
+            console.log("Check data not null");
+            isDuplicateActivity = true;
+        }
+
+        if (isDuplicateActivity) {        
+            res.render("update", { 'data': users,'startDate': startDateStr, 'endDate': endDateStr, 'alarmMessage': 'ชื่อกิจกรรมซ้ำ', 'Qplace': req.body.place, 'QActivity': req.body.ActivityName });
+            return;
+        }
+        
+        const chkTime = await client.db('LoginDB').collection('data').findOne(
+        { 
+            $and : [
+                {$or: [ 
+                    {$and : [{startTime:{$lte:startDate}},{endTime:{$gte:startDate}}]},
+                    {$and : [{startTime:{$lte:endDate}},{endTime:{$gte:endDate}}]}
+                      ]
+                },
+                {
+                    No:{$ne:id}
+                }
+            ]
+        }
+        );
+        
+
+    if (chkTime != null) {
+        console.log("Conflict time with activity :"+ chkTime['ActivityName']+" "+chkTime['startTime']+"-"+chkTime['endTime']);
+        res.render("update", { 'data': users, 'startDate': startDateStr, 'endDate': endDateStr, 'alarmMessage': 'เวลาที่เลือกมีการจัดกิจกรรมอื่นอยู่ '+chkTime['ActivityName'] , 'Qplace': req.body.place, 'QActivity': req.body.ActivityName });
+        await client.close();
+        return;
+    }
+
+        scores = (Math.floor(diffTime / 3600000) > 8.0) ? 8 : (Math.floor(diffTime / 3600000));
+
+        if (scores < 0) {
+            res.render("update", { 'data': users,'startDate': startDateStr, 'endDate': endDateStr, 'alarmMessage': 'กรุณากำหนดเวลากิจกรรมให้ถูกต้อง เวลาสิ้นสุดกิจกรรมต้องมากกว่าเวลาเริ่มกิจกรรม', 'Qplace': req.body.place, 'QActivity': req.body.ActivityName });
+            await client.close();
+            return;
+        }
+    
+        if(scores==0)
+        {
+            scores =1;
+        }    
+
+        console.log("Score : " + scores);
+        if (diffTime < 0) return res.redirect('/update/<%=data.No%>');        
         await client.db('LoginDB').collection('data').updateOne({ 'No': id }, {
             "$set": {
                 ActivityName: req.body.ActivityName,
@@ -415,33 +504,52 @@ router.get("/listname", function(req, res) {
     res.render("listname");
 });
 
-router.get("/assessmentsuccess/:activityName/:id", async function(req, res) {
+router.get("/assessmentsuccess/:activityName/:id/:actYear", async function(req, res) {
     const studentID = req.params.id;
     const activityName = req.params.activityName;
+    let actYear = parseInt(req.params.actYear);
 
     const client = new MongoClient(uri);
     await client.connect();
-    const form = await client.db('LoginDB').collection('assessmentform').findOne({ "ActivityName": activityName, "StudentID": studentID });
+    const form = await client.db('LoginDB').collection('assessmentform').findOne({ "ActivityName": activityName, "StudentID": studentID,"ActYear":actYear });
+    // const form = await client.db('LoginDB').collection('assessmentform').aggregate([
+    //     { 
+    //       $match: {
+    //         $expr: 	{  
+    //       $and:[
+    //             {$eq: [{ $year: '$startTime' },  actYear ]},
+    //             {$eq: ['$ActivityName',  activityName ]},                
+    //             {$eq: ['$StudentID',  studentID ]},
+    //            ]
+    //           }
+               
+    //       }
+    //     }
+    //   ]).toArray();
+    console.log(form);
+
     await client.close()
 
     console.log(form);
 
     if(form!=null)
     {
-        res.render("assessmentsuccess", { 'studentID': studentID, 'activityName': activityName, 'data': form });
+        res.render("assessmentsuccess", { 'studentID': studentID, 'activityName': activityName, 'data': form,'actYear':actYear});
     }
     else
     {
         console.log('redirect');
-        res.redirect("/assessmentform/"+activityName+"/"+studentID);
+        res.redirect("/assessmentform/"+activityName+"/"+studentID+"/"+actYear);
         
     }
     
 });
 
-router.get("/assessmentform/:activityName/:id", async function(req, res) {
+router.get("/assessmentform/:activityName/:id/:actYear", async function(req, res) {
     const studentID = req.params.id;
     let activityName = String(req.params.activityName);
+    let actYear = parseInt(req.params.actYear);
+
     while (activityName.includes("_")) {
         activityName = activityName.replace("_", " ");
     }
@@ -451,30 +559,59 @@ router.get("/assessmentform/:activityName/:id", async function(req, res) {
     //'Check mongodb ก่อนว่าเคยทำแบบประเมินไปแล้วหรือยัง
     const client = new MongoClient(uri);
     await client.connect();
-    const form = await client.db('LoginDB').collection('assessmentform').findOne({ "ActivityName": activityName, "StudentID": studentID });
+    const form = await client.db('LoginDB').collection('assessmentform').findOne({ "ActivityName": activityName, "StudentID": studentID,"ActYear":actYear });
+    // const form = await client.db('LoginDB').collection('assessmentform').aggregate([
+    //     { 
+    //       $match: {
+    //         $expr: 	{  
+    //       $and:[
+    //             {$eq: [{ $year: '$startTime' },  actYear ]},
+    //             {$eq: ['$ActivityName',  activityName ]},                
+    //             {$eq: ['$StudentID',  studentID ]},
+    //            ]
+    //           }
+               
+    //       }
+    //     }
+    //   ]).toArray();
     console.log(form);
-    await client.close()
-    
-    await client.connect();
+        
     const usersCollect = await client.db('LoginDB').collection('posts').findOne({id:studentID});
+    
+    // const chkData = await client.db('LoginDB').collection('data').aggregate([
+    //     { 
+    //       $match: {
+    //         $expr: 	{  
+    //       $and:[
+    //             {$eq: [{ $year: '$startTime' },  actYear ]},
+    //             {$eq: ['$ActivityName',  activityName ]},                
+    //            ]
+    //           }
+               
+    //       }
+    //     }
+    //   ]).toArray();
+
     await client.close();
 
-    let sexID =1
+    let sexID =1;
+    let weingName ="";
     console.log(usersCollect);
     if(usersCollect!=null){        
         sexID = usersCollect['sex'];
+        weingName = usersCollect['weing'];
     }
 
     formIsDone = false;
-    if (form != null) {
+    if (form!=null) {
         console.log("Form is Done");
         formIsDone = true;
     }
 
     if (formIsDone) {
-        res.redirect('/assessmentsuccess/' + activityName + '/' + studentID);
+        res.redirect('/assessmentsuccess/' + activityName + '/' + studentID+'/'+actYear);
     } else {
-        res.render("assessmentform", { 'studentID': studentID, 'activityName': activityName,'sexID':sexID });
+        res.render("assessmentform", { 'studentID': studentID, 'activityName': activityName,'sexID':sexID ,'actYear':actYear,'weingName':weingName});
     }
 
 });
@@ -482,6 +619,8 @@ router.get("/assessmentform/:activityName/:id", async function(req, res) {
 router.post('/saveassessment/:activityName/:id', async(req, res) => {
     const studentID = req.params.id;
     const activityName = req.params.activityName;
+    const actYear = parseInt(req.body.actYear);
+    const weingName = req.body.weingName;
     
     const selectsex = parseInt(req.body.es_sex);
     const select1 = parseInt(req.body.es_id1);
@@ -500,7 +639,9 @@ router.post('/saveassessment/:activityName/:id', async(req, res) => {
     const complain = req.body.es_complain;
 
     console.log(studentID);
+    console.log(weingName);
     console.log(activityName);
+    console.log(actYear);    
     console.log(selectsex);
     console.log(select1);
     console.log(select2);
@@ -521,7 +662,9 @@ router.post('/saveassessment/:activityName/:id', async(req, res) => {
     await client.db('LoginDB').collection('assessmentform').insertOne({
         SaveTime: Date.now(),
         StudentID: studentID,
+        WeingName: weingName,
         ActivityName: activityName,
+        ActYear:actYear,
         S: selectsex,
         Q1_1: select1,
         Q1_2: select2,
@@ -538,19 +681,21 @@ router.post('/saveassessment/:activityName/:id', async(req, res) => {
     });
     await client.close();
 
-    res.redirect('/assessmentsuccess/' + activityName + '/' + studentID);
+    res.redirect('/assessmentsuccess/' + activityName + '/' + studentID+'/'+actYear);
 
 })
 
-router.get('/Dataassessment/:activityname',authRole('admin'), async function(req, res, next) {
-    const activityName = req.params.activityname;
+router.get('/Dataassessment/:activityname/:actYear',authRole('admin'), async function(req, res, next) {
+    const activityName = req.params.activityname; 
+    const actYear = parseInt(req.params.actYear); 
 
     let label1 = ['สุนทรียภาพ','สุขภาพ','ซื่อสัตย์','มีวินัย','ใจอาสา','อื่นๆ'];
     let data1 = [0,0,0,0,0,0];
     let sum1 = 0;
 
-    let label2 = ['ชาย','หญิง'];
-    let data2 = [0,0];    
+    const listWeing = ['bour', 'chiangrang', 'jomtong', 'kaluang', 'lor', 'namtao']
+    let label2 =['บัว','เชียงแรง','จอมทอง','กาหลวง','ลอ','น้ำเต้า']    
+    let data2 = [0,0,0,0,0,0];   
 
     let label3 = ['Critical Thinking ทักษะการวิเคราะห์และแก้ปัญหา','Creativity ทักษะความคิดสร้างสรรค์','Collaboration ทักษะการทำงานร่วมกับผู้อื่น','Communication ทักษะการสื่อสาร','อื่นๆ'];
     let data3 = [0,0,0,0,0];
@@ -558,12 +703,14 @@ router.get('/Dataassessment/:activityname',authRole('admin'), async function(req
 
     const client = new MongoClient(uri);
     await client.connect();
-    const OverAllData = await client.db('LoginDB').collection('assessmentform').find({ActivityName:activityName}).toArray();
+    const OverAllData = await client.db('LoginDB').collection('assessmentform').find({'ActivityName':activityName,'ActYear':actYear}).toArray();
     await client.close();    
 
+    console.log(actYear);
     console.log(activityName);
+    
     let countForm = 0;    
-    if(OverAllData!=null)    {
+    if(OverAllData.length>0)    {
         console.log(OverAllData);
         countForm = OverAllData.length;
 
@@ -574,14 +721,8 @@ router.get('/Dataassessment/:activityname',authRole('admin'), async function(req
                 sum1 += OverAllData[i]['Q1_'+(j+1)];                
             }
            
-            if(OverAllData[i]['S']==1)
-            {
-                data2[0]+=1;
-            }
-            else
-            {
-                data2[1]+=1;
-            }            
+            let indexData = listWeing.indexOf(OverAllData[i]['WeingName']);
+            data2[indexData] = data2[indexData] +1;
 
             for(j=0;j<5;j++)
             {
@@ -628,16 +769,18 @@ router.get('/Dataassessment/:activityname',authRole('admin'), async function(req
     
 });
 
-router.get('/DataassessmentByID/:activityname/:studentid',authRole('Student'), async function(req, res, next) {
+router.get('/DataassessmentByID/:activityname/:studentid/:actYear',authRole('Student'), async function(req, res, next) {
     const activityName = req.params.activityname;
     const studentID = req.params.studentid;
+    const actYear = parseInt(req.params.actYear);
 
     let label1 = ['สุนทรียภาพ','สุขภาพ','ซื่อสัตย์','มีวินัย','ใจอาสา','อื่นๆ'];
     let data1 = [0,0,0,0,0,0];
     let sum1 = 0;
 
-    let label2 = ['ชาย','หญิง'];
-    let data2 = [0,0];    
+    const listWeing = ['bour', 'chiangrang', 'jomtong', 'kaluang', 'lor', 'namtao']
+    let label2 =['บัว','เชียงแรง','จอมทอง','กาหลวง','ลอ','น้ำเต้า']    
+    let data2 = [0,0,0,0,0,0];      
 
     let label3 = ['Critical Thinking ทักษะการวิเคราะห์และแก้ปัญหา','Creativity ทักษะความคิดสร้างสรรค์','Collaboration ทักษะการทำงานร่วมกับผู้อื่น','Communication ทักษะการสื่อสาร','อื่นๆ'];
     let data3 = [0,0,0,0,0];
@@ -645,12 +788,16 @@ router.get('/DataassessmentByID/:activityname/:studentid',authRole('Student'), a
 
     const client = new MongoClient(uri);
     await client.connect();
-    const OverAllData = await client.db('LoginDB').collection('assessmentform').find({ActivityName:activityName,StudentID:studentID}).toArray();
+    const OverAllData = await client.db('LoginDB').collection('assessmentform').find({'ActivityName':activityName,'ActYear':actYear,'StudentID':studentID}).toArray();
     await client.close();    
 
+    console.log(actYear);
     console.log(activityName);
+    console.log(studentID);
+    
+
     let countForm = 0;    
-    if(OverAllData!=null)    {
+    if(OverAllData.length>0)    {
         console.log(OverAllData);
         countForm = OverAllData.length;
 
@@ -661,14 +808,8 @@ router.get('/DataassessmentByID/:activityname/:studentid',authRole('Student'), a
                 sum1 += OverAllData[i]['Q1_'+(j+1)];                
             }
            
-            if(OverAllData[i]['S']==1)
-            {
-                data2[0]+=1;
-            }
-            else
-            {
-                data2[1]+=1;
-            }            
+            let indexData = listWeing.indexOf(OverAllData[i]['WeingName']);
+            data2[indexData] = data2[indexData] +1;        
 
             for(j=0;j<5;j++)
             {
